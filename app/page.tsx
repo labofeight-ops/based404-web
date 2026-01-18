@@ -86,7 +86,9 @@ export default function Page() {
         </section>
       </main>
 
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
 
       <LoginModal
         isOpen={isLoginModalOpen}
