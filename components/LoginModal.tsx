@@ -8,6 +8,8 @@ interface LoginModalProps {
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!isOpen) return null;
 
+    const telegramBotLink = 'https://t.me/based404official';
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md animate-fadeIn"
@@ -29,24 +31,22 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <h2 className="text-2xl font-semibold text-white mb-2">
                             Connect to Unlock
                         </h2>
-                        <p className="text-sm text-zinc-400">
-                            Login with Telegram to access your profile, upgrade your plan, and track your doses.
+                        <p className="text-sm text-zinc-400 mb-4">
+                            Start using BASED404 by connecting with our Telegram bot.
                         </p>
                     </div>
 
-                    <div className="flex justify-center mb-6">
-                        <iframe
-                            src={`https://oauth.telegram.org/embed/based404official?origin=${typeof window !== 'undefined' ? window.location.origin : ''}&return_to=${typeof window !== 'undefined' ? window.location.origin : ''}/api/auth/telegram`}
-                            width="238"
-                            height="40"
-                            frameBorder="0"
-                            scrolling="no"
-                            style={{ border: 'none', overflow: 'hidden' }}
-                        />
-                    </div>
+                    <a
+                        href={telegramBotLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full py-4 px-6 bg-[#0088cc] hover:bg-[#0077b3] text-white font-semibold text-center rounded-xl transition-all duration-200 mb-4"
+                    >
+                        Open Telegram Bot
+                    </a>
 
                     <p className="text-xs text-zinc-500 text-center">
-                        Connect your Telegram account to unlock biological override states
+                        Click above to start chatting with BASED404 on Telegram
                     </p>
                 </div>
             </div>
