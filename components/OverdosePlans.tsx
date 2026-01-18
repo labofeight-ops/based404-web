@@ -4,7 +4,11 @@ import type React from "react"
 import { useState } from "react"
 import { Check } from "lucide-react"
 
-const OverdosePlans: React.FC = () => {
+interface OverdosePlansProps {
+  onLoginClick?: () => void;
+}
+
+const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
   const [isYearly, setIsYearly] = useState(false)
 
   return (
@@ -19,9 +23,8 @@ const OverdosePlans: React.FC = () => {
 
           <div className="flex items-center justify-center gap-4">
             <span
-              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${
-                !isYearly ? "text-white" : "text-neutral-500"
-              }`}
+              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${!isYearly ? "text-white" : "text-neutral-500"
+                }`}
             >
               Monthly
             </span>
@@ -30,15 +33,13 @@ const OverdosePlans: React.FC = () => {
               className="relative w-16 h-8 rounded-full bg-neutral-800 border-2 border-neutral-700 transition-all duration-300 hover:border-cyan-400/50"
             >
               <div
-                className={`absolute top-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-300 ${
-                  isYearly ? "left-[calc(100%-1.75rem)]" : "left-1"
-                }`}
+                className={`absolute top-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-300 ${isYearly ? "left-[calc(100%-1.75rem)]" : "left-1"
+                  }`}
               />
             </button>
             <span
-              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${
-                isYearly ? "text-white" : "text-neutral-500"
-              }`}
+              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${isYearly ? "text-white" : "text-neutral-500"
+                }`}
             >
               Yearly <span className="text-cyan-400 text-xs ml-1">(Save 25%)</span>
             </span>
@@ -69,14 +70,12 @@ const OverdosePlans: React.FC = () => {
                 </div>
               </div>
 
-              <a
-                href="https://t.me/based404official"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={onLoginClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-neutral-800/50 border border-neutral-700 text-white font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-neutral-700/50 hover:scale-105 text-center"
               >
                 START FREE
-              </a>
+              </button>
             </div>
           </div>
 
@@ -124,14 +123,12 @@ const OverdosePlans: React.FC = () => {
                 </div>
               </div>
 
-              <a
-                href="https://t.me/based404official"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={onLoginClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-cyan-400/20 border-2 border-cyan-400 text-cyan-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-cyan-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] text-center"
               >
                 DOSE UP
-              </a>
+              </button>
             </div>
           </div>
 
@@ -185,14 +182,12 @@ const OverdosePlans: React.FC = () => {
                 </div>
               </div>
 
-              <a
-                href="https://t.me/based404official"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={onLoginClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-purple-400/20 border-2 border-purple-400 text-purple-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-purple-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(192,132,252,0.6)] text-center"
               >
                 INJECT ME
-              </a>
+              </button>
             </div>
           </div>
         </div>

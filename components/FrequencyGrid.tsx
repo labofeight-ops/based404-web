@@ -10,6 +10,7 @@ interface FrequencyCardProps {
   target: string
   isRing?: boolean
   onSelect: () => void
+  onLoginClick?: () => void
 }
 
 const FrequencyCard: React.FC<FrequencyCardProps> = ({
@@ -20,6 +21,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
   target,
   isRing,
   onSelect,
+  onLoginClick,
 }) => (
   <div className="glass group relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-4 md:p-12 flex flex-col items-center justify-between overflow-hidden">
     <div className="relative flex-grow w-full flex items-center justify-center">
@@ -53,27 +55,26 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
     </div>
 
     <div className="mt-6 md:mt-12 w-full z-10">
-      <a
-        href="https://t.me/based404official"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full py-3 md:py-5 rounded-2xl md:rounded-3xl border border-white/10 text-[9px] md:text-[11px] tracking-[5px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_white] active:scale-95 text-center"
+      <button
+        onClick={onLoginClick}
+        className="inline-flex items-center justify-center w-full py-3 md:py-5 rounded-2xl md:rounded-3xl border border-white/10 text-[9px] md:text-[11px] tracking-[5px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_white] active:scale-95 text-center"
       >
-        DOSE ME
-      </a>
+        GET STARTED ⚡
+      </button>
     </div>
   </div>
 )
 
 interface FrequencyGridProps {
-  onSelect: (index: number) => void
+  onSelect?: (index: number) => void;
+  onLoginClick?: () => void;
 }
 
-const FrequencyGrid: React.FC<FrequencyGridProps> = ({ onSelect }) => {
+const FrequencyGrid: React.FC<FrequencyGridProps> = ({ onSelect = () => { }, onLoginClick }) => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
       <div className="mb-16 text-center lg:text-left">
-        
+
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
         <FrequencyCard
@@ -83,6 +84,7 @@ const FrequencyGrid: React.FC<FrequencyGridProps> = ({ onSelect }) => {
           description="A direct adrenaline shot to the CPU. Zero drag, zero mercy. Just raw execution."
           target="SYNAPTIC BLITZ"
           onSelect={() => onSelect(0)}
+          onLoginClick={onLoginClick}
         />
         <FrequencyCard
           name="THC-1"
@@ -91,6 +93,7 @@ const FrequencyGrid: React.FC<FrequencyGridProps> = ({ onSelect }) => {
           description="Dissolve the edges. Find the answers that haven't been programmed yet."
           target="DEEP LATERAL FLOW"
           onSelect={() => onSelect(1)}
+          onLoginClick={onLoginClick}
         />
         <FrequencyCard
           name="MOLLY-X"
@@ -99,6 +102,7 @@ const FrequencyGrid: React.FC<FrequencyGridProps> = ({ onSelect }) => {
           description="Hyper-sync your charisma. Know exactly what they want before they even think it."
           target="STRATEGIC RESONANCE"
           onSelect={() => onSelect(2)}
+          onLoginClick={onLoginClick}
         />
       </div>
     </div>

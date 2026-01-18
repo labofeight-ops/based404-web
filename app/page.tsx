@@ -23,9 +23,11 @@ export default function Page() {
     setActiveProtocolIndex(index)
   }
 
+  const openLoginModal = () => setIsLoginModalOpen(true)
+
   return (
     <div className="flex flex-col w-full min-h-screen relative">
-      <Header onLoginClick={() => setIsLoginModalOpen(true)} />
+      <Header onLoginClick={openLoginModal} />
 
       <div className="fixed inset-0 z-0">
         <GL />
@@ -39,23 +41,20 @@ export default function Page() {
       </div>
 
       <main className="w-full relative z-10">
-        {/* Section 1: Hero - Biological AI Header */}
         <section className="pt-[80px] pb-[40px]">
           <Hero />
         </section>
 
-        {/* Section 2: Telegram Login */}
         <section>
           <TelegramLogin />
         </section>
 
-        {/* Section 3: Frequency Cards */}
         <section className="pb-[60px]">
-          <FrequencyGrid onSelect={handleProtocolChange} />
+          <FrequencyGrid onSelect={handleProtocolChange} onLoginClick={openLoginModal} />
         </section>
 
         <section className="bg-black">
-          <OverdosePlans />
+          <OverdosePlans onLoginClick={openLoginModal} />
         </section>
 
         <section className="bg-black">
@@ -66,22 +65,18 @@ export default function Page() {
           <Testimonials />
         </section>
 
-        {/* Section 6: Synaptic Pipeline and Nodes */}
         <section className="pb-[40px] bg-black">
           <SystemVisualizer activeIndex={activeProtocolIndex} onIndexChange={setActiveProtocolIndex} />
         </section>
 
-        {/* Section 7: Lobotomy vs Override */}
         <section className="bg-black">
           <LobotomyVsOverride />
         </section>
 
-        {/* Section 8: Node Process Flow - How It Works */}
         <section className="bg-black">
           <NodeProcessFlow />
         </section>
 
-        {/* Section 9: Medical Warning Disclaimer */}
         <section className="bg-black py-12 px-8">
           <div className="max-w-4xl mx-auto text-center">
             <p className="text-xs md:text-sm font-mono text-red-500/70 leading-relaxed">
@@ -93,7 +88,6 @@ export default function Page() {
 
       <Footer />
 
-      {/* Login Modal */}
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
