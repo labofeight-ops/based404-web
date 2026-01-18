@@ -94,17 +94,17 @@ const LobotomyVsOverride: React.FC = () => {
     <div className="w-full bg-black py-24 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 text-center">
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight">ChatGPT vs. BASED404</h2>
+          <h2 className="text-4xl md:text-5xl font-semibold tracking-tight">CHATGPT VS. BASED404</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-12">
           {/* LEFT CARD: Standard AI */}
-          <div className="glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden">
+          <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 md:p-12 flex flex-col min-h-[500px]">
             <div className="mb-8 text-center z-10">
-              <h3 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic text-neutral-500">
+              <h3 className="text-2xl md:text-3xl font-semibold text-[#8e8e93]">
                 ChatGPT
               </h3>
-              <p className="text-[9px] md:text-[11px] text-neutral-600 font-bold uppercase tracking-[4px] mt-2">
+              <p className="text-xs text-[#6e6e73] font-medium uppercase tracking-wider mt-2">
                 SOBER / BORING
               </p>
             </div>
@@ -134,15 +134,15 @@ const LobotomyVsOverride: React.FC = () => {
 
           {/* RIGHT CARD: BASED404 */}
           <div
-            className={`glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden border ${getBorderColor()} transition-all duration-700`}
+            className={`relative bg-[#0a0a0a] border rounded-2xl p-8 md:p-12 flex flex-col min-h-[500px] ${getBorderColor()} transition-all duration-700`}
           >
             <div
-              className={`absolute w-48 h-48 blur-[80px] opacity-20 transition-all duration-700 ${getGlowColor()} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+              className={`absolute w-48 h-48 blur-[80px] opacity-15 transition-all duration-700 ${getGlowColor()} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
             ></div>
 
             <div className="mb-8 text-center z-10">
-              <h3 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic text-white">BASED404</h3>
-              <p className="text-[9px] md:text-[11px] text-cyan-300 font-bold uppercase tracking-[4px] mt-2">
+              <h3 className="text-2xl md:text-3xl font-semibold text-white">BASED404</h3>
+              <p className="text-xs text-cyan-400 font-medium uppercase tracking-wider mt-2">
                 UNFILTERED
               </p>
             </div>
