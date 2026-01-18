@@ -46,13 +46,9 @@ export default function Page() {
           <Hero />
         </section>
 
-        <section className="bg-black">
-          <HowItWorks />
-        </section>
 
-        <section>
-          <TelegramLogin />
-        </section>
+
+
 
         <section className="pb-[60px]">
           <FrequencyGrid onSelect={handleProtocolChange} onLoginClick={openLoginModal} />
