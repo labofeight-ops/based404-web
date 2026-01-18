@@ -55,6 +55,10 @@ export default function Page() {
         </section>
 
         <section className="bg-black">
+          <NodeProcessFlow />
+        </section>
+
+        <section className="bg-black">
           <OverdosePlans onLoginClick={openLoginModal} />
         </section>
 
@@ -74,9 +78,7 @@ export default function Page() {
           <LobotomyVsOverride />
         </section>
 
-        <section className="bg-black">
-          <NodeProcessFlow />
-        </section>
+
 
         <section className="bg-black py-12 px-8">
           <div className="max-w-4xl mx-auto text-center">
