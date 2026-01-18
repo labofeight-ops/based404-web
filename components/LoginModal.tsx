@@ -1,30 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-    useEffect(() => {
-        if (isOpen) {
-            // Load Telegram widget when modal opens
-            const container = document.getElementById('telegram-login-widget');
-            if (container && container.children.length === 0) {
-                const script = document.createElement('script');
-                script.src = 'https://telegram.org/js/telegram-widget.js?22';
-                script.setAttribute('data-telegram-login', 'based404official');
-                script.setAttribute('data-size', 'large');
-                script.setAttribute('data-auth-url', `${window.location.origin}/api/auth/telegram`);
-                script.setAttribute('data-request-access', 'write');
-                script.async = true;
-                container.appendChild(script);
-            }
-        }
-    }, [isOpen]);
-
     if (!isOpen) return null;
 
     return (
@@ -53,7 +34,16 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </p>
                     </div>
 
-                    <div id="telegram-login-widget" className="flex justify-center mb-6"></div>
+                    <div className="flex justify-center mb-6">
+                        <iframe
+                            src={`https://oauth.telegram.org/embed/based404official?origin=${typeof window !== 'undefined' ? window.location.origin : ''}&return_to=${typeof window !== 'undefined' ? window.location.origin : ''}/api/auth/telegram`}
+                            width="238"
+                            height="40"
+                            frameBorder="0"
+                            scrolling="no"
+                            style={{ border: 'none', overflow: 'hidden' }}
+                        />
+                    </div>
 
                     <p className="text-xs text-zinc-500 text-center">
                         Connect your Telegram account to unlock biological override states
