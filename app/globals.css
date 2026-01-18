@@ -1,494 +1,177 @@
-@import "tailwindcss";
-/* Removed tw-animate-css import that was causing module not found error */
-
-@custom-variant dark (&:is(.dark *));
-
-:root {
-  --bg: #000000;
-  --glass: rgba(10, 10, 10, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-
-  --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-}
-
-@theme inline {
-  --font-sans: var(--font-space-grotesk), "Space Grotesk", "Geist", sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
-  --font-dot-gothic: var(--font-dot-gothic), "DotGothic16", monospace;
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+  :root {
+    /* x.ai/Apple Color System */
+    --background: 0 0% 0%;
+    /* Pure black */
+    --card: 0 0% 4%;
+    /* #0a0a0a */
+    --card-hover: 0 0% 6%;
+    /* #0f0f0f */
+    --border: 0 0% 16%;
+    /* #2a2a2a */
+    --border-subtle: 0 0% 12%;
 
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
+    --foreground: 0 0% 100%;
+    /* White */
+    --muted: 0 0% 56%;
+    /* #8e8e93 */
 
-  /* Accessibility: Focus States */
-  *:focus-visible {
-    outline: 2px solid #ffffff;
-    outline-offset: 4px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
-  }
-
-  button:focus-visible,
-  .rounded-full:focus-visible {
-    border-radius: 9999px;
+    /* Minimal accent colors */
+    --accent-cyan: 189 100% 50%;
+    --accent-purple: 261 60% 65%;
   }
 }
 
-/* Cinematic Noise Filter */
-.noise::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 0.3s steps(10) infinite;
+* {
+  border-color: hsl(var(--border-subtle));
 }
 
-@keyframes grain {
-  0%,
-  100% {
-    transform: translate(0, 0);
+body {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+
+  /* Clean card style - x.ai aesthetic */
+  .card-clean {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  10% {
-    transform: translate(-1%, -1%);
+
+  .card-clean:hover {
+    background: hsl(var(--card-hover));
+    border-color: hsl(var(--border));
+    transform: translateY(-2px);
   }
-  20% {
-    transform: translate(1%, 1%);
+
+  /* Minimal button */
+  .btn-minimal {
+    padding: 12px 24px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: transparent;
   }
-  30% {
-    transform: translate(-2%, -2%);
+
+  .btn-minimal:hover {
+    background: hsl(var(--card));
+    border-color: hsl(var(--foreground) / 0.2);
   }
-  40% {
-    transform: translate(2%, 2%);
+
+  /* Primary CTA - white background */
+  .btn-primary {
+    padding: 12px 32px;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: hsl(var(--foreground) / 0.9);
+    transform: translateY(-1px);
+  }
+
+  /* Keep orb animations - DO NOT CHANGE */
+  .orb-jitter {
+    animation: jitter 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  }
+
+  .orb-breathe {
+    animation: breathe 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .orb-heartbeat {
+    animation: heartbeat 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .status-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
 
-/* Dot-Matrix Branding */
-.neural-dot {
-  font-family: var(--font-dot-gothic);
-  background: linear-gradient(to bottom, #fff, #999);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-/* Substance Animations */
 @keyframes jitter {
-  0% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-4px, 2px);
-  }
-  20% {
-    transform: translate(4px, -2px);
-  }
-  30% {
-    transform: translate(-2px, -4px);
-  }
-  40% {
-    transform: translate(2px, 4px);
-  }
-  50% {
-    transform: translate(-4px, 2px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-}
 
-@keyframes morph-psilo {
   0%,
   100% {
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-    transform: scale(1);
+    transform: translate(0, 0) rotate(0deg);
   }
-  33% {
-    border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
-    transform: scale(1.1);
-  }
-  66% {
-    border-radius: 30% 70% 70% 30% / 50% 40% 30% 60%;
-    transform: scale(0.9);
-  }
-}
 
-@keyframes breathe-thc {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.3;
-    filter: blur(40px);
+  25% {
+    transform: translate(-2px, 2px) rotate(-1deg);
   }
+
   50% {
-    transform: scale(1.5);
-    opacity: 0.6;
-    filter: blur(60px);
+    transform: translate(2px, -2px) rotate(1deg);
   }
-}
 
-@keyframes acid-prism {
-  0% {
-    transform: rotate(0deg) scale(1);
-    filter: hue-rotate(0deg);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.2);
-    filter: hue-rotate(180deg);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-    filter: hue-rotate(360deg);
-  }
-}
-
-@keyframes heartbeat-molly {
-  0%,
-  10%,
-  100% {
-    transform: scale(1);
-    filter: blur(20px);
-  }
-  5% {
-    transform: scale(1.2);
-    filter: blur(15px);
-  }
-  15% {
-    transform: scale(1.1);
-    filter: blur(18px);
-  }
-}
-
-@keyframes dmt-breakthrough {
-  0% {
-    transform: scale(0.2) rotate(0deg);
-    filter: blur(2px) hue-rotate(0deg);
-    opacity: 0;
-  }
-  15% {
-    transform: scale(0.8) rotate(45deg);
-    filter: blur(0px) hue-rotate(90deg);
-    opacity: 1;
-  }
-  30% {
-    transform: scale(1.5) rotate(180deg);
-    filter: blur(4px) hue-rotate(180deg);
-    opacity: 0.7;
-  }
-  45% {
-    transform: scale(0.4) rotate(270deg);
-    filter: blur(1px) hue-rotate(270deg);
-    opacity: 1;
-  }
-  60% {
-    transform: scale(4) rotate(360deg);
-    filter: blur(10px) hue-rotate(360deg);
-    opacity: 0.4;
-  }
   75% {
-    transform: scale(1) rotate(450deg);
-    filter: blur(0px) hue-rotate(450deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.1) rotate(720deg);
-    filter: blur(2px) hue-rotate(720deg);
-    opacity: 0;
+    transform: translate(-2px, -2px) rotate(-1deg);
   }
 }
 
-/* Operational Icons Animations */
-@keyframes orbital-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes breathe {
 
-@keyframes orbital-spin-reverse {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes staggered-pulse {
   0%,
   100% {
-    transform: scaleY(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: scaleY(2);
-    opacity: 1;
-  }
-}
-
-@keyframes ripple-out {
-  0% {
-    transform: scale(0.5);
+    transform: scale(1);
     opacity: 0.8;
   }
-  100% {
-    transform: scale(2);
-    opacity: 0;
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
   }
 }
 
-/* Glassmorphism */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-color);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
+@keyframes heartbeat {
 
-.glass:hover {
-  background: rgba(20, 20, 20, 0.8);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-5px);
-}
-
-/* Marquee */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee {
-  display: flex;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 20px 0;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.marquee-content {
-  display: flex;
-  animation: marquee 40s linear infinite;
-}
-
-/* Specific Orb Assignments */
-.orb-jitter {
-  animation: jitter 0.05s infinite;
-}
-
-.orb-morph {
-  animation: morph-psilo 8s infinite ease-in-out;
-}
-
-.orb-breathe {
-  animation: breathe-thc 6s infinite ease-in-out;
-}
-
-.orb-acid {
-  animation: acid-prism 12s infinite linear;
-}
-
-.orb-heartbeat {
-  animation: heartbeat-molly 2s infinite ease-in-out;
-}
-
-.orb-tunnel {
-  animation: dmt-breakthrough 2.5s infinite linear;
-}
-
-.status-pulse {
-  animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
   0%,
   100% {
     transform: scale(1);
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
   }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.5;
-    box-shadow: 0 0 10px 4px rgba(16, 185, 129, 0);
+
+  14% {
+    transform: scale(1.1);
+  }
+
+  28% {
+    transform: scale(1);
+  }
+
+  42% {
+    transform: scale(1.1);
+  }
+
+  56% {
+    transform: scale(1);
   }
 }
 
-/* Added pulse-line animation for connecting lines */
-@keyframes pulse-line {
+@keyframes pulse {
+
   0%,
   100% {
-    transform: translateX(-100%);
-    opacity: 0;
+    opacity: 1;
   }
+
   50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-/* Added travel animation for moving circles between nodes */
-@keyframes travel {
-  0% {
-    left: 0%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
-/* Added vertical travel animation for mobile node connections */
-@keyframes travel-vertical {
-  0% {
-    top: 0%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
+    opacity: 0.5;
   }
 }
