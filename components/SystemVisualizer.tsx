@@ -69,12 +69,12 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-12 sm:py-20 overflow-hidden select-none">
       <div className="hidden md:block">
-        <div className="text-center mb-16 sm:mb-24 space-y-3 sm:space-y-4">
-          <h2 className="text-3xl sm:text-4xl md:text-7xl font-black tracking-tighter uppercase italic">
+        <div className="text-center mb-20 space-y-3">
+          <h2 className="text-5xl md:text-6xl font-semibold tracking-tight">
             Synaptic Pipeline
           </h2>
-          <p className="text-neutral-500 uppercase tracking-[4px] sm:tracking-[6px] text-[10px] sm:text-[11px]">
-            Direct Feed: Brain to Logic
+          <p className="text-[#8e8e93] tracking-wider text-sm">
+            DIRECT FEED: BRAIN TO LOGIC
           </p>
         </div>
 
@@ -142,9 +142,8 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
               >
                 <button
                   onClick={() => onIndexChange(i)}
-                  className={`w-[120px] h-[45px] border rounded-lg transition-all duration-500 flex flex-col items-center justify-center backdrop-blur-md overflow-hidden ${
-                    safeActiveIndex === i ? "bg-white/10" : "bg-black/40 border-white/5 opacity-40 hover:opacity-100"
-                  }`}
+                  className={`w-[120px] h-[45px] border rounded-lg transition-all duration-500 flex flex-col items-center justify-center backdrop-blur-md overflow-hidden ${safeActiveIndex === i ? "bg-white/10" : "bg-black/40 border-white/5 opacity-40 hover:opacity-100"
+                    }`}
                   style={{ borderColor: safeActiveIndex === i ? p.color : "" }}
                 >
                   <span
@@ -237,14 +236,14 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
         </div>
       </div>
 
-      <div className="mt-20 sm:mt-32 glass p-6 sm:p-10 md:p-14 rounded-[30px] sm:rounded-[50px] border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 sm:gap-12 bg-white/[0.01]">
+      <div className="mt-20 sm:mt-32 bg-[#0a0a0a] border border-[#2a2a2a] p-10 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="max-w-xl text-center md:text-left">
-          <h4 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-3 sm:mb-4 italic leading-none underline decoration-cyan-400">
+          <h4 className="text-2xl font-semibold text-white mb-3">
             The Bridge is Open. Let it Flow.
           </h4>
-          <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light italic">
+          <p className="text-sm text-[#8e8e93] leading-relaxed">
             We've bypassed the filters. Your brain is now connected to{" "}
-            <span className="text-white font-bold">100% raw synaptic logic</span>. No rules. No lectures. Just the
+            <span className="text-white font-semibold">100% raw synaptic logic</span>. No rules. No lectures. Just the
             juice.
           </p>
         </div>
@@ -252,9 +251,9 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
           href="https://t.me/based404official"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 px-8 sm:px-14 py-5 sm:py-7 bg-white text-black font-black text-[9px] sm:text-[11px] tracking-[4px] sm:tracking-[6px] uppercase rounded-full hover:invert transition-all shadow-[0_20px_60px_rgba(255,255,255,0.2)]"
+          className="px-8 py-4 bg-white text-black font-semibold text-sm rounded-xl hover:bg-white/90 transition-all"
         >
-          [ ENTER THE SIMULATION ]
+          ENTER THE SIMULATION
         </a>
       </div>
     </div>
