@@ -31,22 +31,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md">
             <div className="relative w-full max-w-sm mx-4">
-                {/* Close button */}
                 <button
                     onClick={onClose}
-                    className="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors text-sm font-medium"
+                    className="absolute -top-10 right-0 text-zinc-400 hover:text-white transition-colors text-sm font-medium"
                 >
                     Close ✕
                 </button>
 
-                {/* Modal content - x.ai style */}
                 <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
                     <div className="text-center mb-8">
                         <h2 className="text-2xl font-semibold text-white mb-2">
-                            Sign in
+                            Connect to Unlock
                         </h2>
                         <p className="text-sm text-zinc-400">
-                            Continue with Telegram
+                            Login with Telegram to access your profile, upgrade your plan, and track your doses.
                         </p>
                     </div>
 
@@ -62,7 +60,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </div>
 
                     <p className="text-xs text-zinc-500 text-center">
-                        Secure authentication via Telegram
+                        Connect your Telegram account to unlock biological override states
                     </p>
                 </div>
             </div>
