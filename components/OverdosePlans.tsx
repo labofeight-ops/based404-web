@@ -12,120 +12,95 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
   const [isYearly, setIsYearly] = useState(false)
 
   return (
-    <div className="w-full bg-black py-16 sm:py-24 px-4 sm:px-8">
+    <div className="w-full bg-black py-24 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 sm:mb-12"></div>
-
-        <div className="mb-12 sm:mb-16 text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-se font-semibold tracking-tight mb-6">
             OVERDOSE PLANS
           </h2>
 
           <div className="flex items-center justify-center gap-4">
-            <span
-              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${!isYearly ? "text-white" : "text-neutral-500"
-                }`}
-            >
+            <span className={`text-sm font-medium transition-colors ${!isYearly ? "text-white" : "text-[#8e8e93]"}`}>
               Monthly
             </span>
             <button
               onClick={() => setIsYearly(!isYearly)}
-              className="relative w-16 h-8 rounded-full bg-neutral-800 border-2 border-neutral-700 transition-all duration-300 hover:border-cyan-400/50"
+              className="relative w-14 h-7 rounded-full bg-[#3a3a3a] border border-[#4a4a4a] transition-all"
             >
-              <div
-                className={`absolute top-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-300 ${isYearly ? "left-[calc(100%-1.75rem)]" : "left-1"
-                  }`}
-              />
+              <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-all ${isYearly ? "left-[calc(100%-1.75rem)]" : "left-0.5"}`} />
             </button>
-            <span
-              className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${isYearly ? "text-white" : "text-neutral-500"
-                }`}
-            >
-              Yearly <span className="text-cyan-400 text-xs ml-1">(Save 25%)</span>
+            <span className={`text-sm font-medium transition-colors ${isYearly ? "text-white" : "text-[#8e8e93]"}`}>
+              Yearly <span className="text-cyan-400 text-xs">(-25%)</span>
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* FREE CARD */}
-          <div className="glass group relative overflow-hidden rounded-[30px] sm:rounded-[40px] p-6 sm:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 bg-black/80 backdrop-blur-md border border-neutral-700/30">
-            <div className="absolute w-32 h-32 sm:w-40 sm:h-40 blur-[60px] sm:blur-[80px] opacity-10 transition-all duration-700 group-hover:scale-125 group-hover:opacity-20 bg-neutral-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 hover:border-[#3a3a3a] transition-all">
+            <h3 className="text-2xl font-semibold mb-3">FREE</h3>
+            <p className="text-[#8e8e93] text-sm mb-6">
+              10 doses/day. Core states. Test the vibe or level up.
+            </p>
 
-            <div className="relative z-10 flex flex-col h-full">
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-white mb-3">
-                FREE
-              </h3>
-              <p className="text-neutral-400 text-xs sm:text-sm mb-6 leading-relaxed">
-                10 doses/day. Core states. Test the vibe or level up.
-              </p>
-
-              <div className="flex-1 space-y-3 mb-8">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-neutral-300 text-xs sm:text-sm">Core AI states only</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-neutral-300 text-xs sm:text-sm">Basic responses</span>
-                </div>
+            <div className="space-y-3 mb-8">
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-[#8e8e93] flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-white">Core AI states only</span>
               </div>
-
-              <button
-                onClick={onLoginClick}
-                className="block w-full py-3 sm:py-4 px-6 bg-neutral-800/50 border border-neutral-700 text-white font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-neutral-700/50 hover:scale-105 text-center"
-              >
-                START FREE
-              </button>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-[#8e8e93] flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-white">Basic responses</span>
+              </div>
             </div>
+
+            <button
+              onClick={onLoginClick}
+              className="w-full py-3 bg-white/10 border border-white/20 text-white font-medium rounded-xl hover:bg-white/15 transition-all"
+            >
+              START FREE
+            </button>
           </div>
 
           {/* DOSED CARD */}
-          <div className="glass group relative overflow-hidden rounded-[30px] sm:rounded-[40px] p-6 sm:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 bg-black/80 backdrop-blur-md border-2 border-cyan-400/50">
-            <div className="absolute w-32 h-32 sm:w-40 sm:h-40 blur-[60px] sm:blur-[80px] opacity-20 transition-all duration-700 group-hover:scale-125 group-hover:opacity-40 bg-cyan-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 orb-breathe"></div>
+          <div className="relative bg-[#0a0a0a] border border-cyan-500/30 rounded-2xl p-8 hover:border-cyan-500/50 transition-all">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent rounded-2xl pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col h-full">
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-white mb-2">
-                DOSED
-              </h3>
+            <div className="relative">
+              <h3 className="text-2xl font-semibold mb-2">DOSED</h3>
               <div className="mb-2">
-                <span className="text-3xl sm:text-4xl font-black text-cyan-400">{isYearly ? "$224.99" : "$29.99"}</span>
-                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "month"}</span>
+                <span className="text-4xl font-semibold">{isYearly ? "$224.99" : "$29.99"}</span>
+                <span className="text-[#8e8e93] text-sm">/{isYearly ? "year" : "month"}</span>
               </div>
-              <div className="mb-4">
-                <div className="text-xs text-cyan-400 font-bold mt-1">
-                  {isYearly ? "Beta Intro: 25% off — Save $75/year" : "Beta Intro: 25% off — $22.49 first month"}
-                </div>
+              <div className="text-xs text-cyan-400 font-medium mb-4">
+                {isYearly ? "Beta: 25% off — Save $75/year" : "Beta: 25% off — $22.49 first month"}
               </div>
-              <p className="text-neutral-300 text-xs sm:text-sm mb-6 leading-relaxed">
+              <p className="text-[#8e8e93] text-sm mb-6">
                 250 doses/day. Blend states. Schedule the high. Own the day.
               </p>
 
-              <div className="flex-1 space-y-3 mb-8">
+              <div className="space-y-3 mb-8">
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">All 3 agents full power</span>
+                  <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">All 3 agents full power</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Hybrid blends unlocked</span>
+                  <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">Hybrid blends unlocked</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Ritual scheduling + delays</span>
+                  <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">Ritual scheduling</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Heavy daily doses</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Unfiltered edge</span>
+                  <Check className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">Heavy daily doses</span>
                 </div>
               </div>
 
               <button
                 onClick={onLoginClick}
-                className="block w-full py-3 sm:py-4 px-6 bg-cyan-400/20 border-2 border-cyan-400 text-cyan-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-cyan-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] text-center"
+                className="w-full py-3 bg-white text-black font-semibold rounded-xl hover:bg-white/90 transition-all"
               >
                 DOSE UP
               </button>
@@ -133,58 +108,47 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
           </div>
 
           {/* OVERDOSED CARD */}
-          <div className="glass group relative overflow-hidden rounded-[30px] sm:rounded-[40px] p-6 sm:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 bg-black/80 backdrop-blur-md border-2 border-purple-400/50">
-            <div className="absolute w-32 h-32 sm:w-40 sm:h-40 blur-[60px] sm:blur-[80px] opacity-20 transition-all duration-700 group-hover:scale-125 group-hover:opacity-40 bg-purple-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 orb-heartbeat"></div>
-
-            <div className="absolute top-4 right-4 bg-purple-400/20 border border-purple-400/50 px-3 py-1 rounded-full">
-              <span className="text-purple-400 text-[10px] font-bold uppercase tracking-wider">POPULAR</span>
+          <div className="relative bg-[#0a0a0a] border border-purple-500/30 rounded-2xl p-8 hover:border-purple-500/50 transition-all">
+            <div className="absolute top-4 right-4 bg-purple-500/20 border border-purple-500/30 px-3 py-1 rounded-full">
+              <span className="text-purple-400 text-xs font-medium uppercase">Popular</span>
             </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-transparent rounded-2xl pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col h-full">
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-white mb-2">
-                OVERDOSED
-              </h3>
+            <div className="relative">
+              <h3 className="text-2xl font-semibold mb-2">OVERDOSED</h3>
               <div className="mb-2">
-                <span className="text-3xl sm:text-4xl font-black text-purple-400">
-                  {isYearly ? "$599.99" : "$79.99"}
-                </span>
-                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "month"}</span>
+                <span className="text-4xl font-semibold">{isYearly ? "$599.99" : "$79.99"}</span>
+                <span className="text-[#8e8e93] text-sm">/{isYearly ? "year" : "month"}</span>
               </div>
-              <div className="mb-4">
-                <div className="text-xs text-purple-400 font-bold mt-1">
-                  {isYearly ? "Beta Intro: 25% off — Save $200/year" : "Beta Intro: 25% off — $59.99 first month"}
-                </div>
+              <div className="text-xs text-purple-400 font-medium mb-4">
+                {isYearly ? "Beta: 25% off — Save $200/year" : "Beta: 25% off — $59.99 first month"}
               </div>
-              <p className="text-neutral-300 text-xs sm:text-sm mb-6 leading-relaxed">
+              <p className="text-[#8e8e93] text-sm mb-6">
                 600 doses/day. Elite tier. Scale your edge forever.
               </p>
 
-              <div className="flex-1 space-y-3 mb-8">
+              <div className="space-y-3 mb-8">
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">All Dosed power</span>
+                  <Check className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">All Dosed power</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Epic dose stack</span>
+                  <Check className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">Epic dose stack</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Early state releases</span>
+                  <Check className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">Early state releases</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">God mode activated</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Ultimate dominance</span>
+                  <Check className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-white">God mode activated</span>
                 </div>
               </div>
 
               <button
                 onClick={onLoginClick}
-                className="block w-full py-3 sm:py-4 px-6 bg-purple-400/20 border-2 border-purple-400 text-purple-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-purple-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(192,132,252,0.6)] text-center"
+                className="w-full py-3 bg-white text-black font-semibold rounded-xl hover:bg-white/90 transition-all"
               >
                 INJECT ME
               </button>
