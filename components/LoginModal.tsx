@@ -29,8 +29,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md">
-            <div className="relative w-full max-w-sm mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md" onClick={onClose}>
+            <div className="relative w-full max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
                 <button
                     onClick={onClose}
                     className="absolute -top-10 right-0 text-zinc-400 hover:text-white transition-colors text-sm font-medium"
@@ -48,14 +48,25 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </p>
                     </div>
 
-                    <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-6" id="telegram-login-container">
                         <Script
                             src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login="based404official"
-                            data-size="large"
-                            data-onauth="onTelegramAuth(user)"
-                            data-request-access="write"
-                            strategy="lazyOnload"
+                            strategy="afterInteractive"
+                            onLoad={() => {
+                                const script = document.createElement('script');
+                                script.async = true;
+                                script.src = 'https://telegram.org/js/telegram-widget.js?22';
+                                script.setAttribute('data-telegram-login', 'based404official');
+                                script.setAttribute('data-size', 'large');
+                                script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+                                script.setAttribute('data-request-access', 'write');
+
+                                const container = document.getElementById('telegram-login-container');
+                                if (container) {
+                                    container.innerHTML = '';
+                                    container.appendChild(script);
+                                }
+                            }}
                         />
                     </div>
 
