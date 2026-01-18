@@ -14,6 +14,7 @@ import Footer from "@/components/Footer"
 import { GL } from "@/components/gl"
 import TelegramLogin from "@/components/TelegramLogin"
 import LoginModal from "@/components/LoginModal"
+import HowItWorks from "@/components/HowItWorks"
 
 export default function Page() {
   const [activeProtocolIndex, setActiveProtocolIndex] = useState(0)
@@ -43,6 +44,10 @@ export default function Page() {
       <main className="w-full relative z-10">
         <section className="pt-[80px] pb-[40px]">
           <Hero />
+        </section>
+
+        <section className="bg-black">
+          <HowItWorks />
         </section>
 
         <section>
