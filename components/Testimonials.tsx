@@ -89,22 +89,16 @@ const Testimonials: React.FC = () => {
 
   const colorMap = {
     red: {
-      border: "border-red-400/50",
-      bg: "bg-red-400",
+      border: "border-red-400/30",
       text: "text-red-400",
-      glow: "shadow-[0_0_30px_rgba(248,113,113,0.3)]",
     },
     green: {
-      border: "border-emerald-400/50",
-      bg: "bg-emerald-400",
+      border: "border-emerald-400/30",
       text: "text-emerald-400",
-      glow: "shadow-[0_0_30px_rgba(52,211,153,0.3)]",
     },
     pink: {
-      border: "border-pink-400/50",
-      bg: "bg-pink-400",
+      border: "border-pink-400/30",
       text: "text-pink-400",
-      glow: "shadow-[0_0_30px_rgba(244,114,182,0.3)]",
     },
   }
 
@@ -114,12 +108,11 @@ const Testimonials: React.FC = () => {
 
     let animationFrameId: number
     let scrollPosition = 0
-    const scrollSpeed = 0.5 // pixels per frame
+    const scrollSpeed = 0.5
 
     const scroll = () => {
       scrollPosition += scrollSpeed
 
-      // Reset scroll position when we've scrolled through all original items
       if (scrollPosition >= scrollContainer.scrollWidth / 2) {
         scrollPosition = 0
       }
@@ -152,12 +145,8 @@ const Testimonials: React.FC = () => {
             return (
               <div
                 key={index}
-                className={`glass group relative overflow-hidden rounded-[30px] sm:rounded-[40px] p-6 sm:p-8 transition-all duration-500 hover:scale-105 bg-black/80 backdrop-blur-md border-2 ${colors.border} ${colors.glow} flex-shrink-0 w-[300px] sm:w-[350px]`}
+                className={`glass relative overflow-hidden rounded-[30px] sm:rounded-[40px] p-6 sm:p-8 transition-all duration-500 hover:scale-105 bg-black/60 backdrop-blur-md border ${colors.border}  flex-shrink-0 w-[300px] sm:w-[350px]`}
               >
-                <div
-                  className={`absolute w-32 h-32 sm:w-40 sm:h-40 blur-[60px] sm:blur-[80px] opacity-10 transition-all duration-700 group-hover:scale-125 group-hover:opacity-20 ${colors.bg} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
-                ></div>
-
                 <div className="relative z-10">
                   <div className={`text-xs font-bold uppercase tracking-wider ${colors.text} mb-4`}>
                     {testimonial.agent}

@@ -33,7 +33,7 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               className="relative w-16 h-8 rounded-full bg-neutral-800 border-2 border-neutral-700 transition-all duration-300 hover:border-cyan-400/50"
             >
               <div
-                className={`absolute top-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-300 ${isYearly ? "left-[calc(100%-1.75rem)]" : "left-1"
+                className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all duration-300 ${isYearly ? "left-[calc(100%-1.75rem)]" : "left-1"
                   }`}
               />
             </button>

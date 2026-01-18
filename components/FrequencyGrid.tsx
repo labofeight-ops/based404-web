@@ -23,7 +23,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
   onSelect,
   onLoginClick,
 }) => (
-  <div className="glass group relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-4 md:p-12 flex flex-col items-center justify-between overflow-hidden">
+  <div className="glass group relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-4 md:p-12 flex flex-col overflow-hidden">
     <div className="relative flex-grow w-full flex items-center justify-center">
       {/* Background glow */}
       <div
@@ -42,7 +42,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
       )}
     </div>
 
-    <div className="w-full text-center space-y-4 z-10">
+    <div className="w-full text-center space-y-4 z-10 mt-auto">
       <h3 className="text-xl md:text-4xl font-black tracking-tighter uppercase italic text-white">{name}</h3>
       <div className="space-y-3">
         <p className="text-[9px] md:text-[13px] text-neutral-400 font-medium uppercase tracking-[2px] leading-relaxed px-2">
@@ -54,7 +54,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
       </div>
     </div>
 
-    <div className="mt-6 md:mt-12 w-full z-10">
+    <div className="mt-6 md:mt-8 w-full z-10">
       <button
         onClick={onLoginClick}
         className="inline-flex items-center justify-center w-full py-3 md:py-5 rounded-2xl md:rounded-3xl border border-white/10 text-[9px] md:text-[11px] tracking-[5px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_white] active:scale-95 text-center"
