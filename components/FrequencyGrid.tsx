@@ -59,7 +59,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
         onClick={onLoginClick}
         className="inline-flex items-center justify-center w-full py-3 md:py-5 rounded-2xl md:rounded-3xl border border-white/10 text-[9px] md:text-[11px] tracking-[5px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_white] active:scale-95 text-center"
       >
-        GET STARTED ⚡
+        DOSE ME
       </button>
     </div>
   </div>
