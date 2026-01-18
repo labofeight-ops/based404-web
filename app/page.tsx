@@ -13,9 +13,11 @@ import LobotomyVsOverride from "@/components/LobotomyVsOverride"
 import Footer from "@/components/Footer"
 import { GL } from "@/components/gl"
 import TelegramLogin from "@/components/TelegramLogin"
+import LoginModal from "@/components/LoginModal"
 
 export default function Page() {
   const [activeProtocolIndex, setActiveProtocolIndex] = useState(0)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const handleProtocolChange = (index: number) => {
     setActiveProtocolIndex(index)
@@ -23,7 +25,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col w-full min-h-screen relative">
-      <Header />
+      <Header onLoginClick={() => setIsLoginModalOpen(true)} />
 
       <div className="fixed inset-0 z-0">
         <GL />
@@ -90,6 +92,12 @@ export default function Page() {
       </main>
 
       <Footer />
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </div>
   )
 }
