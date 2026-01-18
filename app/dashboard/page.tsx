@@ -113,7 +113,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Main CTA */}
-                <div className="mb-12 bg-zinc-900/50 border border-zinc-700/50 rounded-2xl p-8 shadow-lg shadow-zinc-900/50">
+                <div className="mb-12 bg-zinc-800/30 border border-zinc-700 rounded-2xl p-8">
                     <h2 className="text-xl font-semibold mb-3">Access your AI agent</h2>
                     <p className="text-zinc-400 mb-6 text-sm">
                         Continue your conversation on Telegram with all agents and features
@@ -131,63 +131,80 @@ export default function DashboardPage() {
                     </a>
                 </div>
 
-                {/* Stats Grid */}
+                {/* Stats Grid - WITH GRADIENTS */}
                 <div className="grid grid-cols-3 gap-4 mb-12">
-                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
-                        <div className="text-xs text-zinc-500 mb-1">Plan</div>
-                        <div className="text-lg font-semibold">{user.tier}</div>
+                    {/* Plan card - purple gradient */}
+                    <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="text-xs text-zinc-400 mb-1">Plan</div>
+                            <div className="text-lg font-semibold">{user.tier}</div>
+                        </div>
                     </div>
 
-                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
-                        <div className="text-xs text-zinc-500 mb-1">Doses today</div>
-                        <div className="text-lg font-semibold">{user.credits}/{user.dailyLimit}</div>
+                    {/* Doses card - cyan gradient */}
+                    <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="text-xs text-zinc-400 mb-1">Doses today</div>
+                            <div className="text-lg font-semibold">{user.credits}/{user.dailyLimit}</div>
+                        </div>
                     </div>
 
-                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
-                        <div className="text-xs text-zinc-500 mb-1">Status</div>
+                    {/* Status card - neutral */}
+                    <div className="bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
+                        <div className="text-xs text-zinc-400 mb-1">Status</div>
                         <div className="text-lg font-semibold">{user.tier === 'FREE' ? 'Limited' : 'Active'}</div>
                     </div>
                 </div>
 
                 {/* Upgrade Section */}
                 {user.tier === 'FREE' && (
-                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-2xl p-8 shadow-lg shadow-zinc-900/50">
+                    <div className="bg-zinc-800/30 border border-zinc-700 rounded-2xl p-8">
                         <h2 className="text-xl font-semibold mb-3">Upgrade your plan</h2>
                         <p className="text-zinc-400 mb-8 text-sm">
                             Get access to all agents, blend mode, and increased limits
                         </p>
 
                         <div className="grid md:grid-cols-2 gap-6">
-                            <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
-                                <h3 className="text-lg font-semibold mb-2">DOSED</h3>
-                                <div className="text-3xl font-bold mb-4">
-                                    $29.99<span className="text-base font-normal text-zinc-400">/month</span>
+                            {/* DOSED card - cyan gradient */}
+                            <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all">
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent pointer-events-none"></div>
+                                <div className="relative z-10">
+                                    <h3 className="text-lg font-semibold mb-2">DOSED</h3>
+                                    <div className="text-3xl font-bold mb-4">
+                                        $29.99<span className="text-base font-normal text-zinc-400">/month</span>
+                                    </div>
+                                    <ul className="space-y-2 mb-6 text-sm text-zinc-400">
+                                        <li>• 250 doses/day</li>
+                                        <li>• All 3 agents</li>
+                                        <li>• Blend mode</li>
+                                        <li>• Priority support</li>
+                                    </ul>
+                                    <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
+                                        Upgrade
+                                    </button>
                                 </div>
-                                <ul className="space-y-2 mb-6 text-sm text-zinc-400">
-                                    <li>• 250 doses/day</li>
-                                    <li>• All 3 agents</li>
-                                    <li>• Blend mode</li>
-                                    <li>• Priority support</li>
-                                </ul>
-                                <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
-                                    Upgrade
-                                </button>
                             </div>
 
-                            <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
-                                <h3 className="text-lg font-semibold mb-2">OVERDOSED</h3>
-                                <div className="text-3xl font-bold mb-4">
-                                    $79.99<span className="text-base font-normal text-zinc-400">/month</span>
+                            {/* OVERDOSED card - purple gradient */}
+                            <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-6 hover:border-purple-500/50 transition-all">
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent pointer-events-none"></div>
+                                <div className="relative z-10">
+                                    <h3 className="text-lg font-semibold mb-2">OVERDOSED</h3>
+                                    <div className="text-3xl font-bold mb-4">
+                                        $79.99<span className="text-base font-normal text-zinc-400">/month</span>
+                                    </div>
+                                    <ul className="space-y-2 mb-6 text-sm text-zinc-400">
+                                        <li>• 600 doses/day</li>
+                                        <li>• All features</li>
+                                        <li>• God mode</li>
+                                        <li>• Early access</li>
+                                    </ul>
+                                    <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
+                                        Upgrade
+                                    </button>
                                 </div>
-                                <ul className="space-y-2 mb-6 text-sm text-zinc-400">
-                                    <li>• 600 doses/day</li>
-                                    <li>• All features</li>
-                                    <li>• God mode</li>
-                                    <li>• Early access</li>
-                                </ul>
-                                <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
-                                    Upgrade
-                                </button>
                             </div>
                         </div>
                     </div>
