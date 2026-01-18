@@ -25,7 +25,7 @@ export default function DashboardPage() {
             const token = localStorage.getItem('auth_token');
 
             if (!token) {
-                router.push('/login');
+                router.push('/');
                 return;
             }
 
@@ -44,7 +44,7 @@ export default function DashboardPage() {
                 setUser(data);
             } catch (error) {
                 localStorage.removeItem('auth_token');
-                router.push('/login');
+                router.push('/');
             } finally {
                 setLoading(false);
             }
@@ -79,35 +79,63 @@ export default function DashboardPage() {
     const tierColor = tierColors[user.tier as keyof typeof tierColors] || tierColors.FREE;
 
     return (
-        <div className="min-h-screen bg-black text-white p-6">
-            <div className="max-w-6xl mx-auto">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <div className="flex items-center gap-4">
-                        {user.photoUrl && (
-                            <Image
-                                src={user.photoUrl}
-                                alt={user.name}
-                                width={64}
-                                height={64}
-                                className="rounded-full"
-                            />
-                        )}
-                        <div>
-                            <h1 className="text-2xl font-bold">{user.name}</h1>
-                            <p className="text-gray-400">@{user.username}</p>
-                        </div>
+        <div className="min-h-screen bg-black text-white">
+            {/* Header */}
+            <header className="border-b border-white/10 bg-black/50 backdrop-blur-lg">
+                <div className="max-w-6xl mx-auto px-6 py-4">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            BASED404
+                        </h1>
+                        <button
+                            onClick={handleLogout}
+                            className="px-4 py-2 text-sm bg-red-500/20 hover:bg-red-500/30 rounded-lg transition"
+                        >
+                            Logout
+                        </button>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition"
-                    >
-                        Logout
-                    </button>
+                </div>
+            </header>
+
+            <div className="max-w-6xl mx-auto px-6 py-12">
+                {/* User Profile Section */}
+                <div className="mb-12 text-center">
+                    {user.photoUrl && (
+                        <Image
+                            src={user.photoUrl}
+                            alt={user.name}
+                            width={80}
+                            height={80}
+                            className="rounded-full mx-auto mb-4 border-2 border-purple-500"
+                        />
+                    )}
+                    <h2 className="text-3xl font-bold mb-2">{user.name}</h2>
+                    <p className="text-gray-400">@{user.username}</p>
+                </div>
+
+                {/* Telegram Bot Access - PROMINENT */}
+                <div className="mb-12 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/50 rounded-2xl p-8">
+                    <div className="text-center">
+                        <h3 className="text-2xl font-bold mb-4">Your Telegram Bot is Ready</h3>
+                        <p className="text-gray-300 mb-6">
+                            Start using BASED404 AI with all 3 agents, reminders, and blend mode
+                        </p>
+                        <a
+                            href="https://t.me/based404official"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition"
+                        >
+                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
+                            </svg>
+                            Open Telegram Bot
+                        </a>
+                    </div>
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="grid md:grid-cols-3 gap-6 mb-12">
                     <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
                         <div className="text-gray-400 text-sm mb-2">Current Plan</div>
                         <div className={`text-3xl font-bold bg-gradient-to-r ${tierColor} bg-clip-text text-transparent`}>
@@ -130,16 +158,16 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Upgrade Section */}
+                {/* Upgrade Section - Only for FREE users */}
                 {user.tier === 'FREE' && (
-                    <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-8 mb-8">
-                        <h2 className="text-2xl font-bold mb-4">Unlock Full Access</h2>
+                    <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-8">
+                        <h3 className="text-2xl font-bold mb-4">Unlock Full Access</h3>
                         <p className="text-gray-300 mb-6">
                             Upgrade to access all agents, blend mode, and 250+ doses per day
                         </p>
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="bg-black/50 rounded-lg p-6 border border-purple-500/30">
-                                <h3 className="text-xl font-bold mb-2">DOSED</h3>
+                                <h4 className="text-xl font-bold mb-2">DOSED</h4>
                                 <div className="text-3xl font-bold mb-4">$29.99<span className="text-lg text-gray-400">/mo</span></div>
                                 <ul className="space-y-2 mb-6 text-sm">
                                     <li>✓ 250 doses/day</li>
@@ -153,7 +181,7 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="bg-black/50 rounded-lg p-6 border border-pink-500/30">
-                                <h3 className="text-xl font-bold mb-2">OVERDOSED</h3>
+                                <h4 className="text-xl font-bold mb-2">OVERDOSED</h4>
                                 <div className="text-3xl font-bold mb-4">$79.99<span className="text-lg text-gray-400">/mo</span></div>
                                 <ul className="space-y-2 mb-6 text-sm">
                                     <li>✓ 600 doses/day</li>
@@ -168,49 +196,6 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 )}
-
-                {/* Quick Links */}
-                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
-                    <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-                    <div className="grid md:grid-cols-3 gap-4">
-                        <a
-                            href="https://t.me/based404official"
-                            target="_blank"
-                            className="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 rounded-lg transition"
-                        >
-                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
-                            </svg>
-                            <div>
-                                <div className="font-semibold">Open Bot</div>
-                                <div className="text-sm text-gray-400">Chat with AI</div>
-                            </div>
-                        </a>
-
-                        <button className="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 rounded-lg transition">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                            <div>
-                                <div className="font-semibold">Support</div>
-                                <div className="text-sm text-gray-400">Get help</div>
-                            </div>
-                        </button>
-
-                        <a
-                            href="/"
-                            className="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 rounded-lg transition"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <div>
-                                <div className="font-semibold">Home</div>
-                                <div className="text-sm text-gray-400">Landing page</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     );
