@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 
-// Mock data for preview
 const mockUser = {
     id: 123456789,
     username: 'preview_user',
@@ -27,7 +26,7 @@ export default function DashboardPreviewPage() {
                 </p>
             </div>
 
-            {/* Header - x.ai style */}
+            {/* Header */}
             <header className="border-b border-zinc-800 bg-black">
                 <div className="max-w-5xl mx-auto px-6 py-4">
                     <div className="flex justify-between items-center">
@@ -66,7 +65,7 @@ export default function DashboardPreviewPage() {
                 </div>
 
                 {/* Main CTA - Telegram Bot Access */}
-                <div className="mb-12 bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                <div className="mb-12 bg-zinc-900/50 border border-zinc-700/50 rounded-2xl p-8 shadow-lg shadow-zinc-900/50">
                     <h2 className="text-xl font-semibold mb-3">Access your AI agent</h2>
                     <p className="text-zinc-400 mb-6 text-sm">
                         Continue your conversation on Telegram with all agents and features
@@ -84,33 +83,33 @@ export default function DashboardPreviewPage() {
                     </a>
                 </div>
 
-                {/* Stats Grid */}
+                {/* Stats Grid - More visible gradients */}
                 <div className="grid grid-cols-3 gap-4 mb-12">
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
                         <div className="text-xs text-zinc-500 mb-1">Plan</div>
                         <div className="text-lg font-semibold">{user.tier}</div>
                     </div>
 
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
                         <div className="text-xs text-zinc-500 mb-1">Doses today</div>
                         <div className="text-lg font-semibold">{user.credits}/{user.dailyLimit}</div>
                     </div>
 
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                    <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-4 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
                         <div className="text-xs text-zinc-500 mb-1">Status</div>
                         <div className="text-lg font-semibold">Limited</div>
                     </div>
                 </div>
 
                 {/* Upgrade Section */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+                <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-2xl p-8 shadow-lg shadow-zinc-900/50">
                     <h2 className="text-xl font-semibold mb-3">Upgrade your plan</h2>
                     <p className="text-zinc-400 mb-8 text-sm">
                         Get access to all agents, blend mode, and increased limits
                     </p>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        <div className="border border-zinc-800 rounded-xl p-6">
+                        <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
                             <h3 className="text-lg font-semibold mb-2">DOSED</h3>
                             <div className="text-3xl font-bold mb-4">
                                 $29.99<span className="text-base font-normal text-zinc-400">/month</span>
@@ -126,7 +125,7 @@ export default function DashboardPreviewPage() {
                             </button>
                         </div>
 
-                        <div className="border border-zinc-800 rounded-xl p-6">
+                        <div className="bg-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 hover:border-zinc-600 hover:bg-zinc-900/70 transition-all shadow-lg shadow-zinc-900/50">
                             <h3 className="text-lg font-semibold mb-2">OVERDOSED</h3>
                             <div className="text-3xl font-bold mb-4">
                                 $79.99<span className="text-base font-normal text-zinc-400">/month</span>
