@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import Script from 'next/script';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -10,31 +9,31 @@ interface LoginModalProps {
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     useEffect(() => {
-        (window as any).onTelegramAuth = async (user: any) => {
-            const res = await fetch('/api/auth/telegram', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user),
-            });
-
-            const data = await res.json();
-
-            if (data.token) {
-                localStorage.setItem('auth_token', data.token);
-                window.location.href = '/dashboard';
+        if (isOpen) {
+            // Load Telegram widget when modal opens
+            const container = document.getElementById('telegram-login-widget');
+            if (container && container.children.length === 0) {
+                const script = document.createElement('script');
+                script.src = 'https://telegram.org/js/telegram-widget.js?22';
+                script.setAttribute('data-telegram-login', 'based404official');
+                script.setAttribute('data-size', 'large');
+                script.setAttribute('data-auth-url', `${window.location.origin}/api/auth/telegram`);
+                script.setAttribute('data-request-access', 'write');
+                script.async = true;
+                container.appendChild(script);
             }
-        };
-    }, []);
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
     return (
         <div
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md animate-fadeIn"
             onClick={onClose}
         >
             <div
-                className={`relative w-full max-w-sm mx-4 transform transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+                className="relative w-full max-w-sm mx-4 animate-scaleIn"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
@@ -54,27 +53,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </p>
                     </div>
 
-                    <div className="flex justify-center mb-6" id="telegram-login-container">
-                        <Script
-                            src="https://telegram.org/js/telegram-widget.js?22"
-                            strategy="afterInteractive"
-                            onLoad={() => {
-                                const script = document.createElement('script');
-                                script.async = true;
-                                script.src = 'https://telegram.org/js/telegram-widget.js?22';
-                                script.setAttribute('data-telegram-login', 'based404official');
-                                script.setAttribute('data-size', 'large');
-                                script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-                                script.setAttribute('data-request-access', 'write');
-
-                                const container = document.getElementById('telegram-login-container');
-                                if (container) {
-                                    container.innerHTML = '';
-                                    container.appendChild(script);
-                                }
-                            }}
-                        />
-                    </div>
+                    <div id="telegram-login-widget" className="flex justify-center mb-6"></div>
 
                     <p className="text-xs text-zinc-500 text-center">
                         Connect your Telegram account to unlock biological override states
