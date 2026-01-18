@@ -13,11 +13,9 @@ import LobotomyVsOverride from "@/components/LobotomyVsOverride"
 import Footer from "@/components/Footer"
 import { GL } from "@/components/gl"
 import TelegramLogin from "@/components/TelegramLogin"
-import LoginModal from "@/components/LoginModal"
 
 export default function Page() {
   const [activeProtocolIndex, setActiveProtocolIndex] = useState(0)
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const handleProtocolChange = (index: number) => {
     setActiveProtocolIndex(index)
@@ -25,7 +23,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col w-full min-h-screen relative">
-      <Header onLoginClick={() => setIsLoginModalOpen(true)} />
+      <Header />
 
       <div className="fixed inset-0 z-0">
         <GL />
@@ -41,12 +39,12 @@ export default function Page() {
       <main className="w-full relative z-10">
         {/* Section 1: Hero - Biological AI Header */}
         <section className="pt-[80px] pb-[40px]">
-          <Hero onLoginClick={() => setIsLoginModalOpen(true)} />
+          <Hero />
         </section>
 
         {/* Section 2: Telegram Login */}
         <section>
-          <TelegramLogin onLoginClick={() => setIsLoginModalOpen(true)} />
+          <TelegramLogin />
         </section>
 
         {/* Section 3: Frequency Cards */}
@@ -55,7 +53,7 @@ export default function Page() {
         </section>
 
         <section className="bg-black">
-          <OverdosePlans onLoginClick={() => setIsLoginModalOpen(true)} />
+          <OverdosePlans />
         </section>
 
         <section className="bg-black">
@@ -92,12 +90,6 @@ export default function Page() {
       </main>
 
       <Footer />
-
-      {/* Login Modal */}
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
     </div>
   )
 }
