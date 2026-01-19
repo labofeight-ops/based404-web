@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
         const users = await sql`
       SELECT 
         user_id, username, name, age, gender, mode, 
-        credits, subscription, plan_selected
+        credits, subscription, plan_selected, history
       FROM users 
       WHERE session_token = ${session}
     `;
