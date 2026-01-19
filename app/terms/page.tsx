@@ -38,7 +38,7 @@ export default function TermsOfService() {
 
                     <section>
                         <h2 className="text-2xl font-semibold text-white mb-3">6. Contact</h2>
-                        <p>Questions about Terms? Contact us: @based404official</p>
+                        <p>Questions about Terms? Contact us: @BASED404BOT</p>
                     </section>
                 </div>
 

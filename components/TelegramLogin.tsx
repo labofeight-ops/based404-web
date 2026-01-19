@@ -8,7 +8,7 @@ const TelegramLogin: React.FC = () => {
     // Load Telegram Login Widget script
     const script = document.createElement("script")
     script.src = "https://telegram.org/js/telegram-widget.js?22"
-    script.setAttribute("data-telegram-login", "based404official")
+    script.setAttribute("data-telegram-login", "BASED404BOT")
     script.setAttribute("data-size", "large")
     script.setAttribute("data-radius", "10")
     script.setAttribute("data-auth-url", "https://based404.com/auth/telegram")

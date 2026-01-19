@@ -38,7 +38,7 @@ export default function LoginPage() {
                     <div className="flex justify-center mb-6">
                         <Script
                             src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login="based404official"
+                            data-telegram-login="BASED404BOT"
                             data-size="large"
                             data-onauth="onTelegramAuth(user)"
                             data-request-access="write"

@@ -43,7 +43,7 @@ export default function PrivacyPolicy() {
 
                     <section>
                         <h2 className="text-2xl font-semibold text-white mb-3">5. Contact Us</h2>
-                        <p>For privacy-related questions, contact us via Telegram: @based404official</p>
+                        <p>For privacy-related questions, contact us via Telegram: @BASED404BOT</p>
                     </section>
                 </div>
 

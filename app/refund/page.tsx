@@ -15,7 +15,7 @@ export default function RefundPolicy() {
                         <h2 className="text-2xl font-semibold text-white mb-3">How to Request a Refund</h2>
                         <p>To request a refund:</p>
                         <ol className="list-decimal pl-6 mt-2 space-y-2">
-                            <li>Contact us via Telegram: @based404official</li>
+                            <li>Contact us via Telegram: @BASED404BOT</li>
                             <li>Provide your account email and reason for refund</li>
                             <li>Refund will be processed within 3-5 business days</li>
                         </ol>
