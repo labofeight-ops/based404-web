@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
         const users = await sql`
       SELECT 
         user_id, username, name, age, gender, mode, 
-        credits, subscription, plan_selected, last_active
+        credits, subscription, plan_selected
       FROM users 
       WHERE session_token = ${session}
     `;
@@ -42,8 +42,7 @@ export async function GET(request: NextRequest) {
             credits: user.credits || 0,
             subscription: user.subscription || 'FREE',
             planSelected: user.plan_selected || false,
-            messageCount: messageCount,
-            lastActive: user.last_active
+            messageCount: messageCount
         });
 
     } catch (error) {
