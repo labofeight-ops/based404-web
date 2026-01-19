@@ -8,6 +8,9 @@ interface UserData {
     id: number;
     username: string;
     name: string;
+    age: number;
+    gender: string;
+    agent: string;
     credits: number;
     subscription: string;
     planSelected: boolean;
@@ -74,9 +77,7 @@ export default function Dashboard() {
             const data = await res.json();
 
             if (data.success) {
-                // Refresh user data
                 await fetchUserData();
-                // Update localStorage
                 const updatedUser = { ...user, subscription: plan, credits: data.credits, planSelected: true };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
             }
@@ -148,40 +149,69 @@ export default function Dashboard() {
             ],
             color: 'bg-black border-purple-400',
             textColor: 'text-purple-400',
-            buttonColor: 'bg-purple-400 hover:bg-purple-300 text-black',
+            buttonColor: ' bg-purple-400 hover:bg-purple-300 text-black',
             popular: true
         }
     ];
+
+    const creditsPercentage = user.credits / (user.subscription === 'FREE' ? 5 : user.subscription === 'DOSED' ? 250 : 600) * 100;
 
     return (
         <div className="min-h-screen bg-black text-white">
             <Header />
 
-            {/* Hero Stats Section - Apple Style */}
             <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 pb-16">
-                <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
-                    Dashboard
-                </h1>
+                <div className="mb-12">
+                    <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-2">
+                        {user.name}
+                    </h1>
+                    <p className="text-zinc-400 text-lg">@{user.username || 'user'}</p>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-5xl font-black mb-2">{user.credits}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Credits Remaining</div>
+                {/* Stats Grid - More Engaging */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    {/* Credits with Progress Bar */}
+                    <div className="col-span-2 bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="text-zinc-400 text-sm uppercase tracking-wide">Credits</div>
+                            <div className="text-2xl font-black">{user.credits}</div>
+                        </div>
+                        <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-500"
+                                style={{ width: `${Math.min(creditsPercentage, 100)}%` }}
+                            />
+                        </div>
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
                         <div className="text-5xl font-black mb-2">{user.messageCount}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Messages Sent</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Messages</div>
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
                         <div className="text-5xl font-black mb-2">{user.subscription}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Current Plan</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Tier</div>
+                    </div>
+
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-3xl font-black mb-2">{user.age || '--'}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Age</div>
+                    </div>
+
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-3xl font-black mb-2">{user.gender || '--'}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Gender</div>
+                    </div>
+
+                    <div className="col-span-2 bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-3xl font-black mb-2">{user.agent || 'None'}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Active Agent</div>
                     </div>
                 </div>
 
-                {/* Open Bot Button */}
-                <div className="mb-20">
+                {/* Bot Access */}
+                <div className="mb-16">
                     <a
                         href="https://t.me/BASED404BOT"
                         target="_blank"
