@@ -26,9 +26,16 @@ export default function Dashboard() {
 
     useEffect(() => {
         fetchUserData();
+
+        // Poll for updates every 5 seconds
+        const interval = setInterval(() => {
+            fetchUserData(true); // silent update
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
 
-    const fetchUserData = async () => {
+    const fetchUserData = async (silent = false) => {
         const sessionToken = localStorage.getItem('session_token');
 
         if (!sessionToken) {
