@@ -71,7 +71,7 @@ export default function DashboardPreviewPage() {
                         Continue your conversation on Telegram with all agents and features
                     </p>
                     <a
-                        href="https://t.me/based404official"
+                        href="https://t.me/BASED404BOT"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors"

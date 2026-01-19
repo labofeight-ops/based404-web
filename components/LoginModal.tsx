@@ -8,7 +8,8 @@ interface LoginModalProps {
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!isOpen) return null;
 
-    const telegramBotLink = 'https://t.me/based404official';
+    // Bot authentication link
+    const telegramBotLink = 'https://t.me/BASED404BOT?start=authenticate';
 
     return (
         <div

@@ -249,7 +249,7 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
           </p>
         </div>
         <a
-          href="https://t.me/based404official"
+          href="https://t.me/BASED404BOT"
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 px-8 sm:px-14 py-5 sm:py-7 bg-white text-black font-black text-[9px] sm:text-[11px] tracking-[4px] sm:tracking-[6px] uppercase rounded-full hover:invert transition-all shadow-[0_20px_60px_rgba(255,255,255,0.2)]"

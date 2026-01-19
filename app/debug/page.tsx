@@ -23,7 +23,7 @@ export default function DebugPage() {
                     <h2 className="text-2xl mb-4">2. Login Button Test</h2>
                     <div className="bg-zinc-900 p-8">
                         <a
-                            href="https://t.me/based404official"
+                            href="https://t.me/BASED404BOT"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block w-full max-w-sm mx-auto py-4 px-6 bg-[#0088cc] hover:bg-[#0077b3] text-white font-semibold text-center rounded-xl"

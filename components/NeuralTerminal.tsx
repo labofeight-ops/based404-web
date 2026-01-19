@@ -167,7 +167,7 @@ const NeuralTerminal: React.FC<NeuralTerminalProps> = ({ activeProtocolIndex }) 
               className="w-full bg-black border border-white/10 rounded-full px-10 py-5 text-base focus:outline-none focus:border-cyan-400 transition-all placeholder:text-white/10 placeholder:uppercase placeholder:tracking-[5px] italic"
             />
             <a
-              href="https://t.me/based404official"
+              href="https://t.me/BASED404BOT"
               target="_blank"
               rel="noopener noreferrer"
               className="absolute right-2 px-10 py-3.5 bg-white text-black font-black text-[11px] tracking-[4px] uppercase rounded-full hover:bg-cyan-400 transition-all"

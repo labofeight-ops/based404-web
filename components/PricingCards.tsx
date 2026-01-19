@@ -52,7 +52,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ title, price, features, tagli
 
     <div className="mt-6 md:mt-8 w-full z-10">
       <a
-        href="https://t.me/based404official"
+        href="https://t.me/BASED404BOT"
         target="_blank"
         rel="noopener noreferrer"
         className="block w-full py-4 md:py-6 rounded-2xl md:rounded-3xl border border-white/10 text-xs md:text-sm tracking-[4px] md:tracking-[6px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_40px_white] active:scale-95 text-center"

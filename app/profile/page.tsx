@@ -186,7 +186,7 @@ export default function ProfilePage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
             <a
-              href="https://t.me/based404official"
+              href="https://t.me/BASED404BOT"
               target="_blank"
               rel="noopener noreferrer"
               className="glass px-8 py-4 rounded-full border border-cyan-500/30 text-cyan-400 font-black uppercase tracking-wide hover:border-cyan-400 hover:bg-cyan-500/10 transition-all"
