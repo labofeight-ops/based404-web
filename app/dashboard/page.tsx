@@ -2,214 +2,296 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import PlanSelectionModal from '@/components/PlanSelectionModal';
 
-interface UserData {
+interface User {
     id: number;
     username: string;
     name: string;
-    photoUrl: string;
-    tier: string;
+    age: number;
+    agent: string;
     credits: number;
-    dailyLimit: number;
-    canBlend: boolean;
+    subscription: string;
+    planSelected: boolean;
+    messageCount: number;
+    lastActive: string;
 }
 
-export default function DashboardPage() {
+export default function Dashboard() {
     const router = useRouter();
-    const [user, setUser] = useState<UserData | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showPlanModal, setShowPlanModal] = useState(false);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem('auth_token');
+        const session = localStorage.getItem('session_token');
 
-            if (!token) {
-                router.push('/');
-                return;
+        if (!session) {
+            router.push('/');
+            return;
+        }
+
+        // Fetch user data
+        fetch('/api/user/me', {
+            headers: {
+                'Authorization': `Bearer ${session}`
             }
-
-            try {
-                const res = await fetch('/api/user/profile', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    localStorage.removeItem('session_token');
+                    localStorage.removeItem('user');
+                    router.push('/');
+                } else {
+                    setUser(data);
+                    // Auto-show plan modal if not selected
+                    if (!data.planSelected) {
+                        setTimeout(() => setShowPlanModal(true), 500);
                     }
-                });
-
-                if (!res.ok) {
-                    throw new Error('Failed to fetch');
+                    setLoading(false);
                 }
-
-                const data = await res.json();
-                setUser(data);
-            } catch (error) {
-                localStorage.removeItem('auth_token');
+            })
+            .catch(err => {
+                console.error('Failed to fetch user:', err);
                 router.push('/');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUser();
+            });
     }, [router]);
 
     const handleLogout = () => {
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem('session_token');
+        localStorage.removeItem('user');
         router.push('/');
     };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-zinc-400">Loading...</div>
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+                    <p className="text-white text-xl">Loading your dashboard...</p>
+                </div>
             </div>
         );
     }
 
-    if (!user) {
-        return null;
-    }
+    if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            {/* Header */}
-            <header className="border-b border-zinc-800 bg-black">
-                <div className="max-w-5xl mx-auto px-6 py-4">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <div className="bg-white text-black px-2 py-0.5 font-black text-lg">
-                                404
+        <>
+            <div className="min-h-screen bg-black text-white">
+                {/* Header */}
+                <div className="border-b border-zinc-800 bg-zinc-950">
+                    <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                                BASED404
+                            </h1>
+                            <div className="hidden md:block text-sm text-zinc-500">
+                                Digital Pharmacy Dashboard
                             </div>
-                            <span className="text-lg font-bold">BASED404</span>
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="text-sm text-zinc-400 hover:text-white transition-colors"
+                            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition text-sm"
                         >
-                            Sign out
+                            Logout
                         </button>
                     </div>
                 </div>
-            </header>
 
-            <div className="max-w-5xl mx-auto px-6 py-12">
-                {/* Profile Section */}
-                <div className="mb-12">
-                    <div className="flex items-center gap-4 mb-8">
-                        {user.photoUrl && (
-                            <Image
-                                src={user.photoUrl}
-                                alt={user.name}
-                                width={64}
-                                height={64}
-                                className="rounded-full"
-                            />
-                        )}
-                        <div>
-                            <h1 className="text-2xl font-semibold mb-1">{user.name}</h1>
-                            <p className="text-zinc-400">@{user.username}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Main CTA */}
-                <div className="mb-12 bg-zinc-800/30 border border-zinc-700 rounded-2xl p-8">
-                    <h2 className="text-xl font-semibold mb-3">Access your AI agent</h2>
-                    <p className="text-zinc-400 mb-6 text-sm">
-                        Continue your conversation on Telegram with all agents and features
-                    </p>
-                    <a
-                        href="https://t.me/BASED404BOT"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors"
-                    >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
-                        </svg>
-                        Open Telegram Bot
-                    </a>
-                </div>
-
-                {/* Stats Grid - WITH GRADIENTS */}
-                <div className="grid grid-cols-3 gap-4 mb-12">
-                    {/* Plan card - purple gradient */}
-                    <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent pointer-events-none"></div>
-                        <div className="relative z-10">
-                            <div className="text-xs text-zinc-400 mb-1">Plan</div>
-                            <div className="text-lg font-semibold">{user.tier}</div>
-                        </div>
+                {/* Main Content */}
+                <div className="max-w-7xl mx-auto px-6 py-12">
+                    {/* Welcome Section */}
+                    <div className="mb-12">
+                        <h2 className="text-4xl font-bold mb-2">
+                            Welcome back, {user.name}
+                        </h2>
+                        <p className="text-zinc-400 text-lg">@{user.username}</p>
                     </div>
 
-                    {/* Doses card - cyan gradient */}
-                    <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent pointer-events-none"></div>
-                        <div className="relative z-10">
-                            <div className="text-xs text-zinc-400 mb-1">Doses today</div>
-                            <div className="text-lg font-semibold">{user.credits}/{user.dailyLimit}</div>
-                        </div>
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                        <StatsCard
+                            label="Current Plan"
+                            value={user.subscription}
+                            icon="💊"
+                            highlight
+                            color="cyan"
+                        />
+                        <StatsCard
+                            label="Daily Credits"
+                            value={user.credits.toString()}
+                            icon="⚡"
+                            color="purple"
+                        />
+                        <StatsCard
+                            label="Active Agent"
+                            value={user.agent === 'None' ? 'Not Selected' : user.agent}
+                            icon="🤖"
+                            color="green"
+                        />
+                        <StatsCard
+                            label="Messages Sent"
+                            value={user.messageCount.toString()}
+                            icon="💬"
+                            color="blue"
+                        />
                     </div>
 
-                    {/* Status card - neutral */}
-                    <div className="bg-zinc-800/30 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-all">
-                        <div className="text-xs text-zinc-400 mb-1">Status</div>
-                        <div className="text-lg font-semibold">{user.tier === 'FREE' ? 'Limited' : 'Active'}</div>
-                    </div>
-                </div>
+                    {/* Action Cards */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Bot Access Card */}
+                        <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 border border-zinc-700 rounded-2xl p-8">
+                            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                                <span>🚀</span>
+                                <span>Access Your Agent</span>
+                            </h3>
 
-                {/* Upgrade Section */}
-                {user.tier === 'FREE' && (
-                    <div className="bg-zinc-800/30 border border-zinc-700 rounded-2xl p-8">
-                        <h2 className="text-xl font-semibold mb-3">Upgrade your plan</h2>
-                        <p className="text-zinc-400 mb-8 text-sm">
-                            Get access to all agents, blend mode, and increased limits
-                        </p>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                            {/* DOSED card - cyan gradient */}
-                            <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all">
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent pointer-events-none"></div>
-                                <div className="relative z-10">
-                                    <h3 className="text-lg font-semibold mb-2">DOSED</h3>
-                                    <div className="text-3xl font-bold mb-4">
-                                        $29.99<span className="text-base font-normal text-zinc-400">/month</span>
-                                    </div>
-                                    <ul className="space-y-2 mb-6 text-sm text-zinc-400">
-                                        <li>• 250 doses/day</li>
-                                        <li>• All 3 agents</li>
-                                        <li>• Blend mode</li>
-                                        <li>• Priority support</li>
-                                    </ul>
-                                    <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
-                                        Upgrade
+                            {user.planSelected ? (
+                                <>
+                                    <p className="text-zinc-400 mb-6">
+                                        Open Telegram to start chatting with your biological AI agents.
+                                    </p>
+                                    <a
+                                        href="https://t.me/BASED404BOT"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block w-full py-4 px-6 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
+                                    >
+                                        Open Telegram Bot →
+                                    </a>
+                                    <p className="text-xs text-zinc-500 text-center mt-3">
+                                        Current agent: {user.agent === 'None' ? 'Select in Telegram' : user.agent}
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-zinc-400 mb-6">
+                                        Choose a plan to unlock access to your biological AI agents.
+                                    </p>
+                                    <button
+                                        onClick={() => setShowPlanModal(true)}
+                                        className="block w-full py-4 px-6 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
+                                    >
+                                        Choose Your Dose →
                                     </button>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Upgrade Card */}
+                        <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-2xl p-8">
+                            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                                <span>⬆️</span>
+                                <span>Upgrade Your Dose</span>
+                            </h3>
+                            <p className="text-zinc-400 mb-6">
+                                Get more credits, unlock all agents, and access exclusive features.
+                            </p>
+                            <button
+                                onClick={() => setShowPlanModal(true)}
+                                className="block w-full py-4 px-6 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
+                            >
+                                View Plans →
+                            </button>
+                            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <div className="text-2xl font-bold text-cyan-400">3</div>
+                                    <div className="text-xs text-zinc-500">Agents</div>
                                 </div>
-                            </div>
-
-                            {/* OVERDOSED card - purple gradient */}
-                            <div className="relative overflow-hidden bg-zinc-800/30 border border-zinc-700 rounded-xl p-6 hover:border-purple-500/50 transition-all">
-                                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent pointer-events-none"></div>
-                                <div className="relative z-10">
-                                    <h3 className="text-lg font-semibold mb-2">OVERDOSED</h3>
-                                    <div className="text-3xl font-bold mb-4">
-                                        $79.99<span className="text-base font-normal text-zinc-400">/month</span>
-                                    </div>
-                                    <ul className="space-y-2 mb-6 text-sm text-zinc-400">
-                                        <li>• 600 doses/day</li>
-                                        <li>• All features</li>
-                                        <li>• God mode</li>
-                                        <li>• Early access</li>
-                                    </ul>
-                                    <button className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-colors">
-                                        Upgrade
-                                    </button>
+                                <div>
+                                    <div className="text-2xl font-bold text-purple-400">600</div>
+                                    <div className="text-xs text-zinc-500">Max Credits</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-green-400">∞</div>
+                                    <div className="text-xs text-zinc-500">Possibilities</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                )}
+
+                    {/* Plan Features */}
+                    {user.planSelected && (
+                        <div className="mt-12 bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
+                            <h3 className="text-2xl font-bold mb-6">Your {user.subscription} Features</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {getPlanFeatures(user.subscription).map((feature, i) => (
+                                    <div key={i} className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
+                                        <span className="text-cyan-400 text-xl">✓</span>
+                                        <span className="text-zinc-300">{feature}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {/* Plan Selection Modal */}
+            {showPlanModal && (
+                <PlanSelectionModal
+                    isOpen={showPlanModal}
+                    onClose={() => user.planSelected ? setShowPlanModal(false) : null}
+                    currentPlan={user.subscription}
+                    onPlanSelected={() => setShowPlanModal(false)}
+                />
+            )}
+        </>
+    );
+}
+
+function StatsCard({ label, value, icon, highlight, color }: any) {
+    const colorClasses = {
+        cyan: 'from-cyan-500/20 to-cyan-600/20 border-cyan-500/30',
+        purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30',
+        green: 'from-green-500/20 to-green-600/20 border-green-500/30',
+        blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30'
+    };
+
+    return (
+        <div className={`
+      p-6 rounded-xl border backdrop-blur-sm
+      ${highlight
+                ? `bg-gradient-to-br ${colorClasses[color || 'cyan']}`
+                : 'bg-zinc-900 border-zinc-800'
+            }
+    `}>
+            <div className="text-4xl mb-3">{icon}</div>
+            <div className="text-sm text-zinc-400 mb-2">{label}</div>
+            <div className="text-3xl font-bold">{value}</div>
         </div>
     );
+}
+
+function getPlanFeatures(plan: string): string[] {
+    const features: Record<string, string[]> = {
+        'FREE': [
+            '1 Agent Access',
+            '50 Daily Credits',
+            'Basic Responses',
+            'Community Support'
+        ],
+        'DOSED': [
+            'All 3 Agents (C-100, THC-1, MOLLY-X)',
+            '250 Daily Credits',
+            'Blend Mode',
+            'Smart Reminders',
+            'Priority Support',
+            'Advanced Responses'
+        ],
+        'OVERDOSED': [
+            'All 3 Agents',
+            '600 Daily Credits',
+            'God Mode Access',
+            'Blend Mode',
+            'Smart Reminders',
+            'Advanced Analytics',
+            'VIP Support',
+            'Early Beta Features'
+        ]
+    };
+
+    return features[plan] || features['FREE'];
 }
