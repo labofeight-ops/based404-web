@@ -51,11 +51,16 @@ function verifyTelegramAuth(data: TelegramAuthData): boolean {
 export async function POST(request: NextRequest) {
     try {
         const data: TelegramAuthData = await request.json();
+        console.log('[AUTH] Received auth request for user:', data.id);
 
         // Verify Telegram authentication
-        if (!verifyTelegramAuth(data)) {
+        const isValid = verifyTelegramAuth(data);
+        console.log('[AUTH] Verification result:', isValid);
+
+        if (!isValid) {
+            console.error('[AUTH] Verification failed');
             return NextResponse.json(
-                { error: 'Invalid authentication' },
+                { success: false, error: 'Invalid authentication' },
                 { status: 401 }
             );
         }
@@ -113,9 +118,9 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('Telegram auth error:', error);
+        console.error('[AUTH] Exception:', error);
         return NextResponse.json(
-            { error: 'Authentication failed' },
+            { success: false, error: 'Authentication failed' },
             { status: 500 }
         );
     }

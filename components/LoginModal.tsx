@@ -36,7 +36,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         // Define callback for when user authenticates
         (window as any).onTelegramAuth = async (user: TelegramUser) => {
-            console.log('Telegram auth:', user);
+            console.log('Telegram auth received:', user);
 
             try {
                 // Send to our backend to verify and create session
@@ -46,16 +46,26 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     body: JSON.stringify(user)
                 });
 
+                console.log('Auth API response status:', res.status);
                 const data = await res.json();
+                console.log('Auth API response data:', data);
 
                 if (data.success) {
                     // Store session
                     localStorage.setItem('session_token', data.sessionToken);
                     localStorage.setItem('user', JSON.stringify(data.user));
 
-                    // Redirect to dashboard
-                    window.location.href = '/dashboard';
+                    console.log('Session stored successfully');
+
+                    // Close modal
+                    onClose();
+
+                    // Small delay then redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 300);
                 } else {
+                    console.error('Auth failed:', data.error);
                     alert('Authentication failed: ' + data.error);
                 }
             } catch (error) {
