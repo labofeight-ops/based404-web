@@ -192,28 +192,28 @@ export default function Dashboard() {
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-5xl font-black mb-2">{user.messageCount}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Messages</div>
+                        <div className="text-3xl md:text-5xl font-black mb-2 truncate">{user.messageCount}</div>
+                        <div className="text-zinc-400 text-xs md:text-sm uppercase tracking-wide">Messages</div>
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-5xl font-black mb-2">{user.subscription}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Tier</div>
+                        <div className="text-2xl md:text-5xl font-black mb-2 break-words">{user.subscription}</div>
+                        <div className="text-zinc-400 text-xs md:text-sm uppercase tracking-wide">Tier</div>
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-3xl font-black mb-2">{user.age || '--'}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Age</div>
+                        <div className="text-2xl md:text-3xl font-black mb-2">{user.age || '--'}</div>
+                        <div className="text-zinc-400 text-xs md:text-sm uppercase tracking-wide">Age</div>
                     </div>
 
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-3xl font-black mb-2">{user.gender || '--'}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Gender</div>
+                        <div className="text-2xl md:text-3xl font-black mb-2 truncate">{user.gender || '--'}</div>
+                        <div className="text-zinc-400 text-xs md:text-sm uppercase tracking-wide">Gender</div>
                     </div>
 
                     <div className="col-span-2 bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <div className="text-3xl font-black mb-2">{user.agent || 'None'}</div>
-                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Active Agent</div>
+                        <div className="text-2xl md:text-3xl font-black mb-2 truncate">{user.agent || 'None'}</div>
+                        <div className="text-zinc-400 text-xs md:text-sm uppercase tracking-wide">Active Agent</div>
                     </div>
                 </div>
 
