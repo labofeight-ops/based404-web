@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     `;
 
         // Set credits based on plan
-        let credits = 50; // FREE
+        let credits = 5; // FREE - limited to push upgrade
         if (plan === 'DOSED') credits = 250;
         if (plan === 'OVERDOSED') credits = 600;
 

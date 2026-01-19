@@ -2,296 +2,265 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PlanSelectionModal from '@/components/PlanSelectionModal';
+import Header from '@/components/Header';
 
-interface User {
+interface UserData {
     id: number;
     username: string;
     name: string;
-    age: number;
-    agent: string;
     credits: number;
     subscription: string;
     planSelected: boolean;
     messageCount: number;
-    lastActive: string;
 }
 
 export default function Dashboard() {
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [showPlanModal, setShowPlanModal] = useState(false);
+    const [isYearly, setIsYearly] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
     useEffect(() => {
-        const session = localStorage.getItem('session_token');
+        fetchUserData();
+    }, []);
 
-        if (!session) {
+    const fetchUserData = async () => {
+        const sessionToken = localStorage.getItem('session_token');
+
+        if (!sessionToken) {
             router.push('/');
             return;
         }
 
-        // Fetch user data
-        fetch('/api/user/me', {
-            headers: {
-                'Authorization': `Bearer ${session}`
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    localStorage.removeItem('session_token');
-                    localStorage.removeItem('user');
-                    router.push('/');
-                } else {
-                    setUser(data);
-                    // Auto-show plan modal if not selected
-                    if (!data.planSelected) {
-                        setTimeout(() => setShowPlanModal(true), 500);
-                    }
-                    setLoading(false);
-                }
-            })
-            .catch(err => {
-                console.error('Failed to fetch user:', err);
-                router.push('/');
+        try {
+            const res = await fetch('/api/user/me', {
+                headers: { 'Authorization': `Bearer ${sessionToken}` }
             });
-    }, [router]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('session_token');
-        localStorage.removeItem('user');
-        router.push('/');
+            if (!res.ok) {
+                localStorage.removeItem('session_token');
+                localStorage.removeItem('user');
+                router.push('/');
+                return;
+            }
+
+            const data = await res.json();
+            setUser(data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+            router.push('/');
+        }
+    };
+
+    const selectPlan = async (plan: string) => {
+        const sessionToken = localStorage.getItem('session_token');
+
+        if (!sessionToken) return;
+
+        setSelectedPlan(plan);
+
+        try {
+            const res = await fetch('/api/user/select-plan', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ plan })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // Refresh user data
+                await fetchUserData();
+                // Update localStorage
+                const updatedUser = { ...user, subscription: plan, credits: data.credits, planSelected: true };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+            }
+        } catch (error) {
+            console.error('Plan selection failed:', error);
+        } finally {
+            setSelectedPlan(null);
+        }
     };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-                    <p className="text-white text-xl">Loading your dashboard...</p>
-                </div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
             </div>
         );
     }
 
     if (!user) return null;
 
+    const plans = [
+        {
+            id: 'FREE',
+            name: 'FREE',
+            price: { monthly: 0, yearly: 0 },
+            credits: 5,
+            description: '5 messages total. Single agent. Test the vibe.',
+            features: [
+                'Choose 1 agent only',
+                '5 total messages',
+                'Basic responses',
+                'View profile'
+            ],
+            color: 'bg-zinc-800 border-zinc-700',
+            textColor: 'text-zinc-400',
+            buttonColor: 'bg-zinc-700 hover:bg-zinc-600 text-white'
+        },
+        {
+            id: 'DOSED',
+            name: 'DOSED',
+            price: { monthly: 29.99, yearly: 224.99 },
+            credits: 250,
+            description: '250 messages/day. All agents. Blend mode unlocked.',
+            features: [
+                'All 3 agents full power',
+                '250 daily credits',
+                'Hybrid blend mode',
+                'Advanced memory system',
+                'Ritual scheduling',
+                'Reminder system'
+            ],
+            color: 'bg-black border-cyan-400',
+            textColor: 'text-cyan-400',
+            buttonColor: 'bg-cyan-400 hover:bg-cyan-300 text-black'
+        },
+        {
+            id: 'OVERDOSED',
+            name: 'OVERDOSED',
+            price: { monthly: 79.99, yearly: 599.99 },
+            credits: 600,
+            description: '600 messages/day. Elite tier. Early access to new agents.',
+            features: [
+                'Everything in DOSED',
+                '600 daily credits',
+                'Early agent releases',
+                'Fastest response times',
+                'VIP support channel',
+                'Custom blend ratios'
+            ],
+            color: 'bg-black border-purple-400',
+            textColor: 'text-purple-400',
+            buttonColor: 'bg-purple-400 hover:bg-purple-300 text-black',
+            popular: true
+        }
+    ];
+
     return (
-        <>
-            <div className="min-h-screen bg-black text-white">
-                {/* Header */}
-                <div className="border-b border-zinc-800 bg-zinc-950">
-                    <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                        <div className="flex items-center gap-4">
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                                BASED404
-                            </h1>
-                            <div className="hidden md:block text-sm text-zinc-500">
-                                Digital Pharmacy Dashboard
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition text-sm"
-                        >
-                            Logout
-                        </button>
+        <div className="min-h-screen bg-black text-white">
+            <Header />
+
+            {/* Hero Stats Section - Apple Style */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 pb-16">
+                <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
+                    Dashboard
+                </h1>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-5xl font-black mb-2">{user.credits}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Credits Remaining</div>
+                    </div>
+
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-5xl font-black mb-2">{user.messageCount}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Messages Sent</div>
+                    </div>
+
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div className="text-5xl font-black mb-2">{user.subscription}</div>
+                        <div className="text-zinc-400 text-sm uppercase tracking-wide">Current Plan</div>
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="max-w-7xl mx-auto px-6 py-12">
-                    {/* Welcome Section */}
-                    <div className="mb-12">
-                        <h2 className="text-4xl font-bold mb-2">
-                            Welcome back, {user.name}
-                        </h2>
-                        <p className="text-zinc-400 text-lg">@{user.username}</p>
+                {/* Open Bot Button */}
+                <div className="mb-20">
+                    <a
+                        href="https://t.me/BASED404BOT"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-8 py-4 bg-white text-black font-bold text-lg uppercase tracking-wide rounded-lg hover:bg-zinc-200 transition-colors"
+                    >
+                        Open Telegram Bot
+                    </a>
+                </div>
+
+                {/* Plans Section */}
+                <div className="mb-16">
+                    <h2 className="text-4xl md:text-5xl font-black mb-8">Choose Your Dose</h2>
+
+                    {/* Monthly/Yearly Toggle */}
+                    <div className="flex items-center justify-center gap-4 mb-12">
+                        <span className={`text-sm font-bold uppercase tracking-wide transition-colors ${!isYearly ? 'text-white' : 'text-zinc-500'}`}>
+                            Monthly
+                        </span>
+                        <button
+                            onClick={() => setIsYearly(!isYearly)}
+                            className="relative w-16 h-8 rounded-full bg-zinc-800 border-2 border-zinc-700 transition-all hover:border-zinc-600"
+                        >
+                            <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${isYearly ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
+                        </button>
+                        <span className={`text-sm font-bold uppercase tracking-wide transition-colors ${isYearly ? 'text-white' : 'text-zinc-500'}`}>
+                            Yearly <span className="text-cyan-400 text-xs ml-1">(Save 25%)</span>
+                        </span>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                        <StatsCard
-                            label="Current Plan"
-                            value={user.subscription}
-                            icon="💊"
-                            highlight
-                            color="cyan"
-                        />
-                        <StatsCard
-                            label="Daily Credits"
-                            value={user.credits.toString()}
-                            icon="⚡"
-                            color="purple"
-                        />
-                        <StatsCard
-                            label="Active Agent"
-                            value={user.agent === 'None' ? 'Not Selected' : user.agent}
-                            icon="🤖"
-                            color="green"
-                        />
-                        <StatsCard
-                            label="Messages Sent"
-                            value={user.messageCount.toString()}
-                            icon="💬"
-                            color="blue"
-                        />
-                    </div>
-
-                    {/* Action Cards */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Bot Access Card */}
-                        <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 border border-zinc-700 rounded-2xl p-8">
-                            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                                <span>🚀</span>
-                                <span>Access Your Agent</span>
-                            </h3>
-
-                            {user.planSelected ? (
-                                <>
-                                    <p className="text-zinc-400 mb-6">
-                                        Open Telegram to start chatting with your biological AI agents.
-                                    </p>
-                                    <a
-                                        href="https://t.me/BASED404BOT"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block w-full py-4 px-6 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
-                                    >
-                                        Open Telegram Bot →
-                                    </a>
-                                    <p className="text-xs text-zinc-500 text-center mt-3">
-                                        Current agent: {user.agent === 'None' ? 'Select in Telegram' : user.agent}
-                                    </p>
-                                </>
-                            ) : (
-                                <>
-                                    <p className="text-zinc-400 mb-6">
-                                        Choose a plan to unlock access to your biological AI agents.
-                                    </p>
-                                    <button
-                                        onClick={() => setShowPlanModal(true)}
-                                        className="block w-full py-4 px-6 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
-                                    >
-                                        Choose Your Dose →
-                                    </button>
-                                </>
-                            )}
-                        </div>
-
-                        {/* Upgrade Card */}
-                        <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 border border-purple-500/30 rounded-2xl p-8">
-                            <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                                <span>⬆️</span>
-                                <span>Upgrade Your Dose</span>
-                            </h3>
-                            <p className="text-zinc-400 mb-6">
-                                Get more credits, unlock all agents, and access exclusive features.
-                            </p>
-                            <button
-                                onClick={() => setShowPlanModal(true)}
-                                className="block w-full py-4 px-6 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-center rounded-xl transition-all duration-200 text-lg"
+                    {/* Plan Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {plans.map((plan) => (
+                            <div
+                                key={plan.id}
+                                className={`relative rounded-3xl border-2 ${plan.color} p-8 transition-all hover:scale-105`}
                             >
-                                View Plans →
-                            </button>
-                            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-                                <div>
-                                    <div className="text-2xl font-bold text-cyan-400">3</div>
-                                    <div className="text-xs text-zinc-500">Agents</div>
-                                </div>
-                                <div>
-                                    <div className="text-2xl font-bold text-purple-400">600</div>
-                                    <div className="text-xs text-zinc-500">Max Credits</div>
-                                </div>
-                                <div>
-                                    <div className="text-2xl font-bold text-green-400">∞</div>
-                                    <div className="text-xs text-zinc-500">Possibilities</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Plan Features */}
-                    {user.planSelected && (
-                        <div className="mt-12 bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
-                            <h3 className="text-2xl font-bold mb-6">Your {user.subscription} Features</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {getPlanFeatures(user.subscription).map((feature, i) => (
-                                    <div key={i} className="flex items-start gap-3 p-4 bg-zinc-800/50 rounded-lg">
-                                        <span className="text-cyan-400 text-xl">✓</span>
-                                        <span className="text-zinc-300">{feature}</span>
+                                {plan.popular && (
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-400 px-4 py-1 rounded-full">
+                                        <span className="text-black text-xs font-bold uppercase tracking-wider">Popular</span>
                                     </div>
-                                ))}
+                                )}
+
+                                <h3 className="text-3xl font-black mb-2">{plan.name}</h3>
+
+                                {plan.price.monthly > 0 && (
+                                    <div className="mb-4">
+                                        <span className={`text-4xl font-black ${plan.textColor}`}>
+                                            ${isYearly ? plan.price.yearly : plan.price.monthly}
+                                        </span>
+                                        <span className="text-zinc-400 text-sm">/{isYearly ? 'year' : 'month'}</span>
+                                    </div>
+                                )}
+
+                                <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                                    {plan.description}
+                                </p>
+
+                                <div className="space-y-3 mb-8">
+                                    {plan.features.map((feature, idx) => (
+                                        <div key={idx} className="flex items-start gap-3">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${plan.textColor} mt-2 flex-shrink-0`} />
+                                            <span className="text-sm text-zinc-300">{feature}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => selectPlan(plan.id)}
+                                    disabled={selectedPlan === plan.id || user.subscription === plan.id}
+                                    className={`w-full py-4 px-6 ${plan.buttonColor} font-bold text-sm uppercase tracking-wide rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+                                >
+                                    {selectedPlan === plan.id ? 'Activating...' : user.subscription === plan.id ? 'Current Plan' : `Activate ${plan.name}`}
+                                </button>
                             </div>
-                        </div>
-                    )}
+                        ))}
+                    </div>
                 </div>
             </div>
-
-            {/* Plan Selection Modal */}
-            {showPlanModal && (
-                <PlanSelectionModal
-                    isOpen={showPlanModal}
-                    onClose={() => user.planSelected ? setShowPlanModal(false) : null}
-                    currentPlan={user.subscription}
-                    onPlanSelected={() => setShowPlanModal(false)}
-                />
-            )}
-        </>
-    );
-}
-
-function StatsCard({ label, value, icon, highlight, color }: any) {
-    const colorClasses = {
-        cyan: 'from-cyan-500/20 to-cyan-600/20 border-cyan-500/30',
-        purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30',
-        green: 'from-green-500/20 to-green-600/20 border-green-500/30',
-        blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30'
-    };
-
-    return (
-        <div className={`
-      p-6 rounded-xl border backdrop-blur-sm
-      ${highlight
-                ? `bg-gradient-to-br ${colorClasses[color || 'cyan']}`
-                : 'bg-zinc-900 border-zinc-800'
-            }
-    `}>
-            <div className="text-4xl mb-3">{icon}</div>
-            <div className="text-sm text-zinc-400 mb-2">{label}</div>
-            <div className="text-3xl font-bold">{value}</div>
         </div>
     );
-}
-
-function getPlanFeatures(plan: string): string[] {
-    const features: Record<string, string[]> = {
-        'FREE': [
-            '1 Agent Access',
-            '50 Daily Credits',
-            'Basic Responses',
-            'Community Support'
-        ],
-        'DOSED': [
-            'All 3 Agents (C-100, THC-1, MOLLY-X)',
-            '250 Daily Credits',
-            'Blend Mode',
-            'Smart Reminders',
-            'Priority Support',
-            'Advanced Responses'
-        ],
-        'OVERDOSED': [
-            'All 3 Agents',
-            '600 Daily Credits',
-            'God Mode Access',
-            'Blend Mode',
-            'Smart Reminders',
-            'Advanced Analytics',
-            'VIP Support',
-            'Early Beta Features'
-        ]
-    };
-
-    return features[plan] || features['FREE'];
 }
