@@ -1,93 +1,122 @@
-import { sql } from '@vercel/postgres';
+import { NextRequest, NextResponse } from 'next/server';
+import postgres from 'postgres';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
-const JWT_SECRET = process.env.JWT_SECRET!;
+const sql = postgres(process.env.DATABASE_URL!);
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 
-export async function POST(req: Request) {
+interface TelegramAuthData {
+    id: number;
+    first_name: string;
+    last_name?: string;
+    username?: string;
+    photo_url?: string;
+    auth_date: number;
+    hash: string;
+}
+
+function verifyTelegramAuth(data: TelegramAuthData): boolean {
+    // Get hash from data
+    const { hash, ...dataWithoutHash } = data;
+
+    // Create data check string
+    const dataCheckArr = Object.entries(dataWithoutHash)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key}=${value}`)
+        .sort();
+
+    const dataCheckString = dataCheckArr.join('\n');
+
+    // Create secret key from bot token
+    const secretKey = crypto
+        .createHash('sha256')
+        .update(BOT_TOKEN)
+        .digest();
+
+    // Calculate HMAC
+    const hmac = crypto
+        .createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+    // Check if auth_date is not too old (24 hours)
+    const authAge = Math.floor(Date.now() / 1000) - data.auth_date;
+    if (authAge > 86400) {
+        return false;
+    }
+
+    return hmac === hash;
+}
+
+export async function POST(request: NextRequest) {
     try {
-        const data = await req.json();
+        const data: TelegramAuthData = await request.json();
 
-        // 1. Verify Telegram hash
-        const { hash, ...authData } = data;
-
-        const checkString = Object.keys(authData)
-            .sort()
-            .map(k => `${k}=${authData[k]}`)
-            .join('\n');
-
-        const secretKey = crypto
-            .createHash('sha256')
-            .update(BOT_TOKEN)
-            .digest();
-
-        const hmac = crypto
-            .createHmac('sha256', secretKey)
-            .update(checkString)
-            .digest('hex');
-
-        if (hmac !== hash) {
-            return Response.json({ error: 'Invalid authentication' }, { status: 403 });
+        // Verify Telegram authentication
+        if (!verifyTelegramAuth(data)) {
+            return NextResponse.json(
+                { error: 'Invalid authentication' },
+                { status: 401 }
+            );
         }
 
-        // 2. Check auth_date (must be recent)
-        const authDate = parseInt(authData.auth_date);
-        const now = Math.floor(Date.now() / 1000);
+        const userId = data.id;
+        const username = data.username || '';
+        const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
 
-        if (now - authDate > 86400) { // 24 hours
-            return Response.json({ error: 'Authentication expired' }, { status: 403 });
+        // Check if user exists
+        const existingUsers = await sql`
+            SELECT user_id FROM users WHERE user_id = ${userId}
+        `;
+
+        // Generate session token
+        const sessionToken = crypto.randomUUID();
+
+        if (existingUsers.length === 0) {
+            // Create new user
+            await sql`
+                INSERT INTO users (user_id, username, name, credits, subscription, session_token, plan_selected)
+                VALUES (${userId}, ${username}, ${name}, 50, 'FREE', ${sessionToken}, FALSE)
+            `;
+        } else {
+            // Update session for existing user
+            await sql`
+                UPDATE users 
+                SET session_token = ${sessionToken}, 
+                    username = ${username}
+                WHERE user_id = ${userId}
+            `;
         }
 
-        // 3. Create or update user in database
-        const userId = parseInt(authData.id);
-        const username = authData.username || '';
-        const firstName = authData.first_name || '';
-        const photoUrl = authData.photo_url || '';
+        // Get user data
+        const users = await sql`
+            SELECT user_id, username, name, age, gender, mode, credits, subscription, plan_selected
+            FROM users WHERE user_id = ${userId}
+        `;
 
-        await sql`
-      INSERT INTO users (user_id, username, name, photo_url, subscription)
-      VALUES (${userId}, ${username}, ${firstName}, ${photoUrl}, 'FREE')
-      ON CONFLICT (user_id) 
-      DO UPDATE SET 
-        username = ${username},
-        name = ${firstName},
-        photo_url = ${photoUrl},
-        last_active = NOW()
-    `;
+        const user = users[0];
 
-        // 4. Get user data
-        const result = await sql`
-      SELECT user_id, username, name, subscription, credits
-      FROM users WHERE user_id = ${userId}
-    `;
-
-        const user = result.rows[0];
-
-        // 5. Create JWT token
-        const token = jwt.sign(
-            {
-                userId: user.user_id,
-                username: user.username,
-                tier: user.subscription
-            },
-            JWT_SECRET,
-            { expiresIn: '30d' }
-        );
-
-        return Response.json({
-            token,
+        return NextResponse.json({
+            success: true,
+            sessionToken,
             user: {
                 id: user.user_id,
                 username: user.username,
                 name: user.name,
-                tier: user.subscription,
-                credits: user.credits
+                age: user.age,
+                gender: user.gender,
+                agent: user.mode || 'None',
+                credits: user.credits,
+                subscription: user.subscription,
+                planSelected: user.plan_selected
             }
         });
 
     } catch (error) {
         console.error('Telegram auth error:', error);
-        return Response.json({ error: 'Authentication failed' }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Authentication failed' },
+            { status: 500 }
+        );
     }
 }
