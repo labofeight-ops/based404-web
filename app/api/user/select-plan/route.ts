@@ -46,6 +46,29 @@ export async function POST(request: NextRequest) {
       WHERE user_id = ${user.user_id}
     `;
 
+        // Notify User via Telegram
+        try {
+            const token = process.env.TELEGRAM_TOKEN;
+            if (token) {
+                const message = `⚡ **PLAN UPGRADE CONFIRMED**\n\n` +
+                    `You have successfully switched to **${plan}**.\n` +
+                    `Daily Limit: ${credits} doses.\n\n` +
+                    `_Effect is immediate._`;
+
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: user.user_id,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            }
+        } catch (e) {
+            console.error('Failed to send Telegram notification:', e);
+        }
+
         return NextResponse.json({ success: true, plan, credits });
 
     } catch (error) {

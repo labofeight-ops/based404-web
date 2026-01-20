@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react"
 
 const LiveUserCounter = () => {
-    const [count, setCount] = useState(4024)
+    const [count, setCount] = useState(142)
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCount((prev) => {
-                const change = Math.floor(Math.random() * 7) - 3 // -3 to +3
+                const change = Math.floor(Math.random() * 5) - 2 // -2 to +2
+                // Keep within believable bounds
+                if (prev < 120) return prev + 3
+                if (prev > 180) return prev - 3
                 return prev + change
             })
-        }, 4000)
+        }, 5000)
 
         return () => clearInterval(interval)
     }, [])
@@ -19,7 +22,7 @@ const LiveUserCounter = () => {
     return (
         <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-            <span>ONLINE: {count.toLocaleString()}</span>
+            <span>DOSED USERS: {count.toLocaleString()}</span>
         </div>
     )
 }
