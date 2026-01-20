@@ -41,7 +41,7 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               className={`text-sm sm:text-base font-bold uppercase tracking-wide transition-colors duration-300 ${isYearly ? "text-white" : "text-neutral-500"
                 }`}
             >
-              Yearly <span className="text-cyan-400 text-xs ml-1">(Save 25%)</span>
+              Yearly <span className="text-cyan-400 text-xs ml-1">(Save 35%)</span>
             </span>
           </div>
         </div>
@@ -88,12 +88,12 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
                 DOSED
               </h3>
               <div className="mb-2">
-                <span className="text-3xl sm:text-4xl font-black text-cyan-400">{isYearly ? "$224.99" : "$29.99"}</span>
-                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "month"}</span>
+                <span className="text-3xl sm:text-4xl font-black text-cyan-400">{isYearly ? "$149" : "$19"}</span>
+                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "mo"}</span>
               </div>
               <div className="mb-4">
                 <div className="text-xs text-cyan-400 font-bold mt-1">
-                  {isYearly ? "Beta Intro: 25% off — Save $75/year" : "Beta Intro: 25% off — $22.49 first month"}
+                  {isYearly ? "$12/mo billed yearly" : "Cancel ChatGPT. This hits different."}
                 </div>
               </div>
               <p className="text-neutral-300 text-xs sm:text-sm mb-6 leading-relaxed">
@@ -146,13 +146,13 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               </h3>
               <div className="mb-2">
                 <span className="text-3xl sm:text-4xl font-black text-purple-400">
-                  {isYearly ? "$599.99" : "$79.99"}
+                  {isYearly ? "$299" : "$39"}
                 </span>
-                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "month"}</span>
+                <span className="text-neutral-400 text-sm">/{isYearly ? "year" : "mo"}</span>
               </div>
               <div className="mb-4">
                 <div className="text-xs text-purple-400 font-bold mt-1">
-                  {isYearly ? "Beta Intro: 25% off — Save $200/year" : "Beta Intro: 25% off — $59.99 first month"}
+                  {isYearly ? "$25/mo billed yearly" : "Power users only. Maximum capacity."}
                 </div>
               </div>
               <p className="text-neutral-300 text-xs sm:text-sm mb-6 leading-relaxed">
