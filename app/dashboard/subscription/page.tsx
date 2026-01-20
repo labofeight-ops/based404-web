@@ -35,14 +35,9 @@ export default function SubscriptionPage() {
         fetchUser();
     }, [router]);
 
-    const plans = {
-        FREE: { name: 'FREE', price: '$0', doses: '10/day', features: ['1 agent', 'Basic chat'] },
-        DOSED: { name: 'DOSED', price: '$9.99/mo', doses: '250/day', features: ['All agents', 'Blend Mode', 'Web search', 'Memory', 'Reminders'] },
-        OVERDOSED: { name: 'OVERDOSED', price: '$29.99/mo', doses: '600/day', features: ['Everything in DOSED', 'Priority responses', 'API access'] }
-    };
-
-    const currentPlanKey = user?.subscription?.toUpperCase() || 'FREE';
-    const currentPlan = plans[currentPlanKey as keyof typeof plans] || plans.FREE;
+    const currentPlan = user?.subscription?.toUpperCase() || 'FREE';
+    const planRank = { 'FREE': 0, 'DOSED': 1, 'OVERDOSED': 2 };
+    const currentRank = planRank[currentPlan as keyof typeof planRank] || 0;
 
     if (loading) {
         return (
@@ -56,82 +51,165 @@ export default function SubscriptionPage() {
         <div className="min-h-screen bg-black text-white">
             <Header />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-8 pt-24 pb-16">
-                <h1 className="text-4xl font-black tracking-tight mb-2">Subscription</h1>
-                <p className="text-zinc-400 mb-12">Your plan. Your rules.</p>
-
-                {/* Current Plan */}
-                <div className={`bg-zinc-950 border rounded-2xl p-8 mb-8 ${currentPlanKey === 'OVERDOSED' ? 'border-purple-500/50' :
-                        currentPlanKey === 'DOSED' ? 'border-cyan-500/50' : 'border-zinc-800'
-                    }`}>
-                    <div className="flex items-start justify-between mb-6">
-                        <div>
-                            <p className="text-zinc-500 text-sm mb-1">Current plan</p>
-                            <h2 className={`text-4xl font-black ${currentPlanKey === 'OVERDOSED' ? 'text-purple-400' :
-                                    currentPlanKey === 'DOSED' ? 'text-cyan-400' : ''
-                                }`}>
-                                {currentPlan.name}
-                            </h2>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-2xl font-bold">{currentPlan.price}</p>
-                            <p className="text-sm text-zinc-500">{currentPlan.doses}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mb-6">
-                        {currentPlan.features.map((f, i) => (
-                            <span key={i} className="px-3 py-1.5 bg-zinc-800 rounded-full text-sm">{f}</span>
-                        ))}
-                    </div>
-
-                    {currentPlanKey !== 'FREE' && (
-                        <p className="text-sm text-zinc-500">Next billing: Feb 20, 2026</p>
-                    )}
+            <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-24 pb-16">
+                <div className="text-center mb-12">
+                    <h1 className="text-5xl font-black tracking-tight mb-4">Choose Your Dose</h1>
+                    <p className="text-zinc-400 text-lg">Cancel ChatGPT. This hits different.</p>
                 </div>
 
-                {/* Choose Your Dose */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 mb-8">
-                    <h2 className="text-2xl font-bold mb-6">Choose your dose</h2>
+                {/* Plan Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {Object.entries(plans).map(([key, plan]) => (
-                            <div
-                                key={key}
-                                className={`p-6 rounded-xl border transition-all ${currentPlanKey === key
-                                        ? key === 'OVERDOSED' ? 'border-purple-500 bg-purple-500/5' :
-                                            key === 'DOSED' ? 'border-cyan-500 bg-cyan-500/5' : 'border-zinc-600'
-                                        : 'border-zinc-800 hover:border-zinc-700'
-                                    }`}
-                            >
-                                {currentPlanKey === key && (
-                                    <span className="text-xs bg-white text-black px-2 py-1 rounded-full font-medium mb-3 inline-block">Current</span>
-                                )}
-                                <h3 className={`text-xl font-black mb-1 ${key === 'OVERDOSED' ? 'text-purple-400' :
-                                        key === 'DOSED' ? 'text-cyan-400' : ''
-                                    }`}>
-                                    {plan.name}
-                                </h3>
-                                <p className="text-xl font-bold">{plan.price}</p>
-                                <p className="text-sm text-zinc-500 mb-4">{plan.doses}</p>
+                    {/* FREE */}
+                    <div className={`rounded-3xl border-2 p-8 ${currentPlan === 'FREE' ? 'border-zinc-500 bg-zinc-900/50' : 'border-zinc-800'}`}>
+                        {currentPlan === 'FREE' && <span className="text-xs bg-zinc-600 px-3 py-1 rounded-full mb-4 inline-block">Current</span>}
+                        <h3 className="text-3xl font-black mb-2">FREE</h3>
+                        <div className="mb-4">
+                            <span className="text-4xl font-black">$0</span>
+                        </div>
+                        <p className="text-zinc-400 text-sm mb-6">Taste the vibe. See if you're ready.</p>
 
-                                {currentPlanKey !== key && (
-                                    <button className={`w-full py-2.5 rounded-lg font-medium text-sm transition-colors ${key === 'OVERDOSED' ? 'bg-purple-500 hover:bg-purple-600' :
-                                            key === 'DOSED' ? 'bg-cyan-500 hover:bg-cyan-600 text-black' :
-                                                'bg-zinc-700 hover:bg-zinc-600'
-                                        }`}>
-                                        {key === 'FREE' ? 'Downgrade' : 'Upgrade'}
-                                    </button>
-                                )}
-                            </div>
-                        ))}
+                        <ul className="space-y-3 mb-8 text-sm">
+                            <li className="flex items-start gap-2">
+                                <span className="text-zinc-500">✓</span>
+                                <span>10 doses/day</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-zinc-500">✓</span>
+                                <span>1 agent (C-100)</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-zinc-500">✓</span>
+                                <span>Basic responses</span>
+                            </li>
+                            <li className="flex items-start gap-2 text-zinc-600">
+                                <span>✗</span>
+                                <span>No web search</span>
+                            </li>
+                            <li className="flex items-start gap-2 text-zinc-600">
+                                <span>✗</span>
+                                <span>No memory</span>
+                            </li>
+                            <li className="flex items-start gap-2 text-zinc-600">
+                                <span>✗</span>
+                                <span>No reminders</span>
+                            </li>
+                        </ul>
+
+                        {currentRank > 0 && (
+                            <button className="w-full py-3 border border-zinc-700 rounded-xl text-zinc-400 hover:bg-zinc-800 transition-colors">
+                                Downgrade
+                            </button>
+                        )}
+                    </div>
+
+                    {/* DOSED */}
+                    <div className={`rounded-3xl border-2 p-8 relative ${currentPlan === 'DOSED' ? 'border-cyan-500 bg-cyan-500/5' : 'border-cyan-500/50'}`}>
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-cyan-500 px-4 py-1 rounded-full">
+                            <span className="text-black text-xs font-bold">MOST POPULAR</span>
+                        </div>
+                        {currentPlan === 'DOSED' && <span className="text-xs bg-cyan-500 text-black px-3 py-1 rounded-full mb-4 inline-block">Current</span>}
+                        <h3 className="text-3xl font-black text-cyan-400 mb-2">DOSED</h3>
+                        <div className="mb-1">
+                            <span className="text-4xl font-black">$19</span>
+                            <span className="text-zinc-400">/month</span>
+                        </div>
+                        <p className="text-xs text-zinc-500 mb-4">or $149/year (save 35%)</p>
+                        <p className="text-zinc-400 text-sm mb-6">The full experience. Replace ChatGPT today.</p>
+
+                        <ul className="space-y-3 mb-8 text-sm">
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>250 doses/day</strong></span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>All 3 agents</strong> — switch anytime</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>Blend Mode</strong> — 3 minds, 1 answer</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>Live web search</strong> — real-time data</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>Persistent memory</strong> — remembers you</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>Smart reminders</strong> — never forget</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-cyan-400">✓</span>
+                                <span><strong>Personality learning</strong> — adapts to you</span>
+                            </li>
+                        </ul>
+
+                        {currentRank < 1 && (
+                            <button className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-xl transition-colors">
+                                Get DOSED
+                            </button>
+                        )}
+                        {currentRank > 1 && (
+                            <button className="w-full py-3 border border-cyan-500 text-cyan-400 rounded-xl hover:bg-cyan-500/10 transition-colors">
+                                Downgrade
+                            </button>
+                        )}
+                    </div>
+
+                    {/* OVERDOSED */}
+                    <div className={`rounded-3xl border-2 p-8 ${currentPlan === 'OVERDOSED' ? 'border-purple-500 bg-purple-500/5' : 'border-purple-500/50'}`}>
+                        {currentPlan === 'OVERDOSED' && <span className="text-xs bg-purple-500 px-3 py-1 rounded-full mb-4 inline-block">Current</span>}
+                        <h3 className="text-3xl font-black text-purple-400 mb-2">OVERDOSED</h3>
+                        <div className="mb-1">
+                            <span className="text-4xl font-black">$39</span>
+                            <span className="text-zinc-400">/month</span>
+                        </div>
+                        <p className="text-xs text-zinc-500 mb-4">or $299/year (save 36%)</p>
+                        <p className="text-zinc-400 text-sm mb-6">Power users only. Maximum capacity.</p>
+
+                        <ul className="space-y-3 mb-8 text-sm">
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span><strong>600 doses/day</strong></span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span>Everything in DOSED</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span><strong>Priority responses</strong> — faster than fast</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span><strong>Early access</strong> — new agents first</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span><strong>API access</strong> — build with us</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-purple-400">✓</span>
+                                <span><strong>VIP support</strong> — we got you</span>
+                            </li>
+                        </ul>
+
+                        {currentRank < 2 && (
+                            <button className="w-full py-3 bg-purple-500 hover:bg-purple-600 font-bold rounded-xl transition-colors">
+                                Go OVERDOSED
+                            </button>
+                        )}
                     </div>
                 </div>
 
-                {/* Payment & Billing - Only for paid */}
-                {currentPlanKey !== 'FREE' && (
-                    <>
-                        <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 mb-8">
+                {/* Billing Section for Paid Users */}
+                {currentRank > 0 && (
+                    <div className="space-y-6">
+                        <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
                             <h2 className="text-xl font-bold mb-4">Payment method</h2>
                             <div className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-xl">
                                 <div className="w-12 h-8 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">VISA</div>
@@ -145,14 +223,14 @@ export default function SubscriptionPage() {
                             </button>
                         </div>
 
-                        <div className="bg-zinc-950 border border-red-900/30 rounded-2xl p-8">
-                            <h2 className="text-xl font-bold text-red-400 mb-2">Cancel</h2>
-                            <p className="text-zinc-500 text-sm mb-4">Keep access until your period ends. Come back anytime.</p>
+                        <div className="bg-zinc-950 border border-red-900/30 rounded-2xl p-6">
+                            <h2 className="text-lg font-bold text-red-400 mb-2">Cancel subscription</h2>
+                            <p className="text-zinc-500 text-sm mb-4">Keep access until your period ends.</p>
                             <button className="px-4 py-2 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-colors text-sm">
-                                Cancel subscription
+                                Cancel
                             </button>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </div>
