@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import LiveUserCounter from './LiveUserCounter';
 
 interface HeaderProps {
   onLoginClick?: () => void;
@@ -51,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
         <div className="flex items-center space-x-2 sm:space-x-3 bg-white/5 border border-white/10 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full">
           <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-rose-500 rounded-full status-pulse shadow-[0_0_10px_#f43f5e]"></div>
           <span className="text-[8px] sm:text-[10px] font-bold tracking-[2px] sm:tracking-[3px] uppercase opacity-80">
-            VIBE: ACTIVE
+            <LiveUserCounter />
           </span>
         </div>
 
