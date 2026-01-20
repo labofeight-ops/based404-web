@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Check } from "lucide-react"
 
 interface OverdosePlansProps {
@@ -10,6 +11,19 @@ interface OverdosePlansProps {
 
 const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
   const [isYearly, setIsYearly] = useState(false)
+  const router = useRouter()
+
+  const handlePlanClick = () => {
+    // Check if user is logged in
+    const sessionToken = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
+    if (sessionToken) {
+      // Logged in - go directly to subscription page
+      router.push('/dashboard/subscription')
+    } else {
+      // Not logged in - show login modal
+      onLoginClick?.()
+    }
+  }
 
   return (
     <div className="w-full bg-black py-16 sm:py-24 px-4 sm:px-8">
@@ -71,7 +85,7 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               </div>
 
               <button
-                onClick={onLoginClick}
+                onClick={handlePlanClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-neutral-800/50 border border-neutral-700 text-white font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-neutral-700/50 hover:scale-105 text-center"
               >
                 START FREE
@@ -124,7 +138,7 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               </div>
 
               <button
-                onClick={onLoginClick}
+                onClick={handlePlanClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-cyan-400/20 border-2 border-cyan-400 text-cyan-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-cyan-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] text-center"
               >
                 DOSE UP
@@ -183,7 +197,7 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
               </div>
 
               <button
-                onClick={onLoginClick}
+                onClick={handlePlanClick}
                 className="block w-full py-3 sm:py-4 px-6 bg-purple-400/20 border-2 border-purple-400 text-purple-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-purple-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(192,132,252,0.6)] text-center"
               >
                 INJECT ME

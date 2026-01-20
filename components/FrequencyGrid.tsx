@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useRouter } from "next/navigation"
 
 interface FrequencyCardProps {
   name: string
@@ -22,7 +23,22 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
   isRing,
   onSelect,
   onLoginClick,
-}) => (
+}) => {
+  const router = useRouter()
+
+  const handleClick = () => {
+    // Check if user is logged in
+    const sessionToken = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
+    if (sessionToken) {
+      // Logged in - go to dashboard
+      router.push('/dashboard')
+    } else {
+      // Not logged in - show login modal
+      onLoginClick?.()
+    }
+  }
+
+  return (
   <div className="glass group relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-4 md:p-12 flex flex-col overflow-hidden">
     <div className="relative flex-grow w-full flex items-center justify-center">
       {/* Background glow */}
@@ -56,7 +72,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
 
     <div className="mt-6 md:mt-8 w-full z-10">
       <button
-        onClick={onLoginClick}
+        onClick={handleClick}
         className="inline-flex items-center justify-center w-full py-3 md:py-5 rounded-2xl md:rounded-3xl border border-white/10 text-[9px] md:text-[11px] tracking-[5px] font-black uppercase transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_white] active:scale-95 text-center"
       >
         DOSE ME
@@ -64,6 +80,7 @@ const FrequencyCard: React.FC<FrequencyCardProps> = ({
     </div>
   </div>
 )
+}
 
 interface FrequencyGridProps {
   onSelect?: (index: number) => void;
