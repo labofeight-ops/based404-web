@@ -5,73 +5,71 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Link from 'next/link';
 
-interface BillingHistory {
-    date: string;
-    description: string;
-    amount: string;
-    status: 'paid' | 'pending' | 'failed';
-}
-
 export default function SubscriptionPage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
-    // Mock billing history - in production this would come from Stripe/DB
-    const billingHistory: BillingHistory[] = [
-        { date: '2026-01-20', description: 'DOSED Monthly Plan', amount: '$9.99', status: 'paid' },
-        { date: '2025-12-20', description: 'DOSED Monthly Plan', amount: '$9.99', status: 'paid' },
-    ];
-
     useEffect(() => {
-        const sessionToken = localStorage.getItem('session_token');
-        const userData = localStorage.getItem('user');
+        const fetchUser = async () => {
+            const sessionToken = localStorage.getItem('session_token');
+            if (!sessionToken) {
+                router.push('/');
+                return;
+            }
 
-        if (!sessionToken || !userData) {
-            router.push('/');
-            return;
-        }
-
-        try {
-            setUser(JSON.parse(userData));
-        } catch (e) {
-            router.push('/');
-        }
-        setLoading(false);
+            try {
+                const res = await fetch('/api/user/me', {
+                    headers: { 'Authorization': `Bearer ${sessionToken}` }
+                });
+                const data = await res.json();
+                if (data.error) {
+                    router.push('/');
+                    return;
+                }
+                setUser(data);
+            } catch (e) {
+                router.push('/');
+            }
+            setLoading(false);
+        };
+        fetchUser();
     }, [router]);
 
-    const getPlanDetails = (plan: string) => {
-        switch (plan?.toUpperCase()) {
-            case 'DOSED':
-                return {
-                    name: 'DOSED',
-                    price: '$9.99/month',
-                    credits: '250 doses/day',
-                    features: ['All 3 agents', 'Blend Mode', 'Web Search', 'Memory', 'Priority Support']
-                };
-            case 'OVERDOSED':
-                return {
-                    name: 'OVERDOSED',
-                    price: '$29.99/month',
-                    credits: 'Unlimited doses',
-                    features: ['Everything in DOSED', 'Unlimited usage', 'Custom agents', 'API Access', 'Dedicated Support']
-                };
-            default:
-                return {
-                    name: 'FREE',
-                    price: '$0',
-                    credits: '10 doses/day',
-                    features: ['1 agent (C-100)', 'Basic chat', 'Limited memory']
-                };
+    const plans = {
+        FREE: {
+            name: 'FREE',
+            price: '$0',
+            period: 'forever',
+            doses: '10 doses/day',
+            features: ['1 agent (C-100)', 'Basic memory', 'Limited access'],
+            color: 'zinc'
+        },
+        DOSED: {
+            name: 'DOSED',
+            price: '$9.99',
+            period: '/month',
+            doses: '250 doses/day',
+            features: ['All 3 agents', 'Blend Mode', 'Web search', 'Full memory', 'Priority support'],
+            color: 'cyan'
+        },
+        OVERDOSED: {
+            name: 'OVERDOSED',
+            price: '$29.99',
+            period: '/month',
+            doses: 'Unlimited',
+            features: ['Everything in DOSED', 'No limits', 'API access', 'Custom agents', 'Dedicated support'],
+            color: 'purple'
         }
     };
 
-    const currentPlan = getPlanDetails(user?.subscription);
+    const currentPlanKey = user?.subscription?.toUpperCase() || 'FREE';
+    const currentPlan = plans[currentPlanKey as keyof typeof plans] || plans.FREE;
 
     if (loading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-white">Loading...</div>
+                <div className="text-cyan-400 animate-pulse">Loading your subscription...</div>
             </div>
         );
     }
@@ -81,168 +79,208 @@ export default function SubscriptionPage() {
             <Header />
 
             <div className="max-w-4xl mx-auto px-4 sm:px-8 pt-24 pb-16">
-                <h1 className="text-4xl font-black tracking-tight mb-2">Subscription</h1>
-                <p className="text-zinc-400 mb-12">Manage your plan, billing, and payment methods</p>
+                <h1 className="text-4xl font-black tracking-tight mb-2">Your Plan</h1>
+                <p className="text-zinc-400 mb-12">Manage your subscription, billing, and take control.</p>
 
-                {/* Current Plan */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 mb-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold">Current Plan</h2>
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${currentPlan.name === 'FREE' ? 'bg-zinc-700' :
-                                currentPlan.name === 'DOSED' ? 'bg-cyan-500/20 text-cyan-400' :
-                                    'bg-purple-500/20 text-purple-400'
-                            }`}>
-                            {currentPlan.name}
-                        </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Current Plan Card */}
+                <div className={`bg-zinc-950 border rounded-2xl p-8 mb-8 ${currentPlanKey === 'OVERDOSED' ? 'border-purple-500/50' :
+                        currentPlanKey === 'DOSED' ? 'border-cyan-500/50' : 'border-zinc-800'
+                    }`}>
+                    <div className="flex items-start justify-between mb-6">
                         <div>
-                            <p className="text-zinc-400 text-sm mb-1">Plan</p>
-                            <p className="text-2xl font-bold">{currentPlan.name}</p>
+                            <p className="text-zinc-500 text-sm mb-1">You're on</p>
+                            <h2 className={`text-4xl font-black ${currentPlanKey === 'OVERDOSED' ? 'text-purple-400' :
+                                    currentPlanKey === 'DOSED' ? 'text-cyan-400' : 'text-white'
+                                }`}>
+                                {currentPlan.name}
+                            </h2>
                         </div>
-                        <div>
-                            <p className="text-zinc-400 text-sm mb-1">Price</p>
-                            <p className="text-2xl font-bold">{currentPlan.price}</p>
-                        </div>
-                        <div>
-                            <p className="text-zinc-400 text-sm mb-1">Credits</p>
-                            <p className="text-lg">{currentPlan.credits}</p>
-                        </div>
-                        <div>
-                            <p className="text-zinc-400 text-sm mb-1">Next Billing Date</p>
-                            <p className="text-lg">{currentPlan.name === 'FREE' ? 'N/A' : 'Feb 20, 2026'}</p>
+                        <div className="text-right">
+                            <p className="text-3xl font-bold">{currentPlan.price}</p>
+                            <p className="text-sm text-zinc-500">{currentPlan.period}</p>
                         </div>
                     </div>
 
-                    <div className="mb-6">
-                        <p className="text-zinc-400 text-sm mb-2">Features included:</p>
-                        <ul className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-zinc-900/50 rounded-xl p-4">
+                            <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Daily allowance</p>
+                            <p className="text-xl font-bold">{currentPlan.doses}</p>
+                        </div>
+                        <div className="bg-zinc-900/50 rounded-xl p-4">
+                            <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Next billing</p>
+                            <p className="text-xl font-bold">{currentPlanKey === 'FREE' ? 'Never' : 'Feb 20, 2026'}</p>
+                        </div>
+                    </div>
+
+                    <div className="mb-8">
+                        <p className="text-zinc-500 text-xs uppercase tracking-wider mb-3">What you get</p>
+                        <div className="flex flex-wrap gap-2">
                             {currentPlan.features.map((feature, i) => (
-                                <li key={i} className="flex items-center gap-2 text-sm">
-                                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                    </svg>
+                                <span key={i} className="px-3 py-1.5 bg-zinc-800 rounded-full text-sm">
                                     {feature}
-                                </li>
+                                </span>
                             ))}
-                        </ul>
+                        </div>
                     </div>
 
-                    {/* Plan Actions */}
-                    <div className="flex flex-wrap gap-3 pt-4 border-t border-zinc-800">
-                        {currentPlan.name === 'FREE' && (
-                            <Link href="/#pricing" className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-600 rounded-lg font-medium transition-colors">
-                                Upgrade to DOSED
-                            </Link>
-                        )}
-                        {currentPlan.name === 'DOSED' && (
+                    {/* Upgrade/Downgrade Actions */}
+                    <div className="flex flex-wrap gap-3 pt-6 border-t border-zinc-800">
+                        {currentPlanKey === 'FREE' && (
                             <>
-                                <Link href="/#pricing" className="px-6 py-2.5 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors">
-                                    Upgrade to OVERDOSED
-                                </Link>
-                                <button className="px-6 py-2.5 border border-zinc-700 hover:bg-zinc-800 rounded-lg font-medium transition-colors">
+                                <button className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 rounded-lg font-medium transition-colors">
+                                    Upgrade to DOSED — $9.99/mo
+                                </button>
+                                <button className="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors">
+                                    Go OVERDOSED — $29.99/mo
+                                </button>
+                            </>
+                        )}
+                        {currentPlanKey === 'DOSED' && (
+                            <>
+                                <button className="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors">
+                                    Level up to OVERDOSED
+                                </button>
+                                <button className="px-6 py-3 border border-zinc-700 hover:bg-zinc-800 rounded-lg font-medium transition-colors text-zinc-400">
                                     Downgrade to FREE
                                 </button>
                             </>
                         )}
-                        {currentPlan.name === 'OVERDOSED' && (
-                            <button className="px-6 py-2.5 border border-zinc-700 hover:bg-zinc-800 rounded-lg font-medium transition-colors">
+                        {currentPlanKey === 'OVERDOSED' && (
+                            <button className="px-6 py-3 border border-zinc-700 hover:bg-zinc-800 rounded-lg font-medium transition-colors text-zinc-400">
                                 Downgrade to DOSED
                             </button>
                         )}
                     </div>
                 </div>
 
-                {/* Payment Method */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 mb-6">
-                    <h2 className="text-xl font-bold mb-6">Payment Method</h2>
+                {/* Choose Your Dose - Plan Comparison */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 mb-8">
+                    <h2 className="text-2xl font-bold mb-2">Choose your dose</h2>
+                    <p className="text-zinc-500 mb-8">Find the plan that matches your appetite.</p>
 
-                    {currentPlan.name === 'FREE' ? (
-                        <p className="text-zinc-500">No payment method required for free plan</p>
-                    ) : (
-                        <>
-                            <div className="flex items-center gap-4 p-4 bg-zinc-900 rounded-lg mb-4">
-                                <div className="w-12 h-8 bg-gradient-to-r from-blue-600 to-blue-400 rounded flex items-center justify-center text-white font-bold text-xs">
-                                    VISA
-                                </div>
-                                <div>
-                                    <p className="font-medium">Visa ending in 4242</p>
-                                    <p className="text-sm text-zinc-500">Expires 12/2028</p>
-                                </div>
-                                <div className="ml-auto">
-                                    <span className="text-xs text-green-500 bg-green-500/10 px-2 py-1 rounded">Default</span>
-                                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {Object.entries(plans).map(([key, plan]) => (
+                            <div
+                                key={key}
+                                className={`p-6 rounded-xl border transition-all ${currentPlanKey === key
+                                        ? key === 'OVERDOSED' ? 'border-purple-500 bg-purple-500/5' :
+                                            key === 'DOSED' ? 'border-cyan-500 bg-cyan-500/5' : 'border-zinc-600 bg-zinc-900/50'
+                                        : 'border-zinc-800 hover:border-zinc-700'
+                                    }`}
+                            >
+                                {currentPlanKey === key && (
+                                    <span className="text-xs bg-white text-black px-2 py-1 rounded-full font-medium mb-3 inline-block">
+                                        Current
+                                    </span>
+                                )}
+                                <h3 className={`text-2xl font-black mb-1 ${key === 'OVERDOSED' ? 'text-purple-400' :
+                                        key === 'DOSED' ? 'text-cyan-400' : ''
+                                    }`}>
+                                    {plan.name}
+                                </h3>
+                                <p className="text-2xl font-bold mb-1">{plan.price}<span className="text-sm text-zinc-500">{plan.period}</span></p>
+                                <p className="text-sm text-zinc-500 mb-4">{plan.doses}</p>
+                                <ul className="space-y-2">
+                                    {plan.features.map((f, i) => (
+                                        <li key={i} className="text-sm text-zinc-400 flex items-center gap-2">
+                                            <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            {f}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                            <div className="flex gap-3">
-                                <button className="px-4 py-2 text-sm border border-zinc-700 hover:bg-zinc-800 rounded-lg transition-colors">
-                                    Update Card
-                                </button>
-                                <button className="px-4 py-2 text-sm border border-zinc-700 hover:bg-zinc-800 rounded-lg transition-colors">
-                                    Add New Card
-                                </button>
-                            </div>
-                        </>
-                    )}
+                        ))}
+                    </div>
                 </div>
 
-                {/* Billing History */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 mb-6">
-                    <h2 className="text-xl font-bold mb-6">Billing History</h2>
+                {/* Payment Method */}
+                {currentPlanKey !== 'FREE' && (
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 mb-8">
+                        <h2 className="text-xl font-bold mb-6">Payment method</h2>
 
-                    {currentPlan.name === 'FREE' ? (
-                        <p className="text-zinc-500">No billing history for free plan</p>
-                    ) : (
+                        <div className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-xl border border-zinc-800 mb-4">
+                            <div className="w-14 h-10 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                                VISA
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-medium">•••• •••• •••• 4242</p>
+                                <p className="text-sm text-zinc-500">Expires 12/28</p>
+                            </div>
+                            <span className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full">Default</span>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button className="px-4 py-2 text-sm border border-zinc-700 hover:bg-zinc-800 rounded-lg transition-colors">
+                                Update card
+                            </button>
+                            <button className="px-4 py-2 text-sm border border-zinc-700 hover:bg-zinc-800 rounded-lg transition-colors">
+                                Add new card
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Billing History */}
+                {currentPlanKey !== 'FREE' && (
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 mb-8">
+                        <h2 className="text-xl font-bold mb-6">Billing history</h2>
+
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
                                     <tr className="text-left text-sm text-zinc-500 border-b border-zinc-800">
-                                        <th className="pb-3">Date</th>
-                                        <th className="pb-3">Description</th>
-                                        <th className="pb-3">Amount</th>
-                                        <th className="pb-3">Status</th>
-                                        <th className="pb-3">Invoice</th>
+                                        <th className="pb-4 font-medium">Date</th>
+                                        <th className="pb-4 font-medium">Description</th>
+                                        <th className="pb-4 font-medium">Amount</th>
+                                        <th className="pb-4 font-medium">Status</th>
+                                        <th className="pb-4 font-medium"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {billingHistory.map((item, i) => (
-                                        <tr key={i} className="border-b border-zinc-800/50">
-                                            <td className="py-4 text-sm">{item.date}</td>
-                                            <td className="py-4 text-sm">{item.description}</td>
-                                            <td className="py-4 text-sm">{item.amount}</td>
-                                            <td className="py-4">
-                                                <span className={`text-xs px-2 py-1 rounded ${item.status === 'paid' ? 'bg-green-500/10 text-green-500' :
-                                                        item.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
-                                                            'bg-red-500/10 text-red-500'
-                                                    }`}>
-                                                    {item.status.toUpperCase()}
-                                                </span>
-                                            </td>
-                                            <td className="py-4">
-                                                <button className="text-cyan-400 text-sm hover:underline">Download</button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    <tr className="border-b border-zinc-800/50">
+                                        <td className="py-4 text-sm">Jan 20, 2026</td>
+                                        <td className="py-4 text-sm">{currentPlan.name} Monthly</td>
+                                        <td className="py-4 text-sm">{currentPlan.price}</td>
+                                        <td className="py-4">
+                                            <span className="text-xs px-2 py-1 rounded-full bg-green-500/10 text-green-400">Paid</span>
+                                        </td>
+                                        <td className="py-4">
+                                            <button className="text-cyan-400 text-sm hover:underline">Download</button>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b border-zinc-800/50">
+                                        <td className="py-4 text-sm">Dec 20, 2025</td>
+                                        <td className="py-4 text-sm">{currentPlan.name} Monthly</td>
+                                        <td className="py-4 text-sm">{currentPlan.price}</td>
+                                        <td className="py-4">
+                                            <span className="text-xs px-2 py-1 rounded-full bg-green-500/10 text-green-400">Paid</span>
+                                        </td>
+                                        <td className="py-4">
+                                            <button className="text-cyan-400 text-sm hover:underline">Download</button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
 
-                {/* Cancel Subscription */}
-                {currentPlan.name !== 'FREE' && (
-                    <div className="bg-zinc-950 border border-red-900/30 rounded-2xl p-6">
-                        <h2 className="text-xl font-bold text-red-400 mb-4">Cancel Subscription</h2>
-                        <p className="text-zinc-400 text-sm mb-4">
-                            If you cancel, you'll lose access to premium features at the end of your current billing period.
-                            Your data will be preserved and you can re-subscribe anytime.
+                {/* Cancel Section */}
+                {currentPlanKey !== 'FREE' && (
+                    <div className="bg-zinc-950 border border-red-900/30 rounded-2xl p-8">
+                        <h2 className="text-xl font-bold text-red-400 mb-2">Done with us?</h2>
+                        <p className="text-zinc-500 mb-6">
+                            Cancel and you'll keep access until your current period ends.
+                            Your data sticks around if you change your mind. No hard feelings.
                         </p>
-                        <div className="flex gap-3">
-                            <button className="px-4 py-2 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-colors text-sm">
-                                Cancel Subscription
+                        <div className="flex flex-wrap gap-3">
+                            <button className="px-5 py-2.5 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-colors text-sm">
+                                Cancel subscription
                             </button>
-                            <button className="px-4 py-2 border border-zinc-700 text-zinc-400 rounded-lg hover:bg-zinc-800 transition-colors text-sm">
-                                Pause Instead (Keep Data)
+                            <button className="px-5 py-2.5 border border-zinc-700 text-zinc-400 rounded-lg hover:bg-zinc-800 transition-colors text-sm">
+                                Pause instead
                             </button>
                         </div>
                     </div>
