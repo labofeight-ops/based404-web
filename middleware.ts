@@ -7,7 +7,9 @@ export function middleware(request: NextRequest) {
 
     if (hostname && hostname.startsWith('www.')) {
         const newHost = hostname.replace('www.', '')
-        return NextResponse.redirect(`https://${newHost}${url.pathname}${url.search}`, 301)
+        const targetUrl = new URL(request.url)
+        targetUrl.hostname = newHost
+        return NextResponse.redirect(targetUrl.toString(), 301)
     }
 
     return NextResponse.next()
