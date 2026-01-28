@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import LiveUserCounter from './LiveUserCounter';
 
@@ -16,6 +16,8 @@ interface User {
 const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showLoginDropdown, setShowLoginDropdown] = useState(false);
+  const loginContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check if user is logged in
@@ -30,6 +32,49 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (showLoginDropdown && loginContainerRef.current) {
+      // Clear container
+      loginContainerRef.current.innerHTML = '';
+
+      // Set up global callback
+      (window as any).onTelegramAuth = async (tgUser: any) => {
+        console.log('Telegram auth in header:', tgUser);
+        try {
+          const res = await fetch('/api/auth/telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tgUser)
+          });
+          const data = await res.json();
+          if (data.success) {
+            localStorage.setItem('session_token', data.sessionToken);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            setUser(data.user);
+            setShowLoginDropdown(false);
+            window.location.href = '/dashboard';
+          } else {
+            alert('Auth failed: ' + (data.error || 'Unknown error'));
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+        }
+      };
+
+      // Create Script
+      const script = document.createElement('script');
+      script.src = 'https://telegram.org/js/telegram-widget.js?22';
+      script.setAttribute('data-telegram-login', 'BASED404BOT');
+      script.setAttribute('data-size', 'medium');
+      script.setAttribute('data-radius', '8');
+      script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+      script.setAttribute('data-request-access', 'write');
+      script.async = true;
+
+      loginContainerRef.current.appendChild(script);
+    }
+  }, [showLoginDropdown]);
 
   const handleLogout = () => {
     localStorage.removeItem('session_token');
@@ -131,19 +176,48 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
             )}
           </div>
         ) : (
-          /* Not Logged In - Show Login Button */
-          onLoginClick && (
+          /* Not Logged In - Show Login Dropdown */
+          <div className="relative">
             <button
-              onClick={onLoginClick}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
+              onClick={() => setShowLoginDropdown(!showLoginDropdown)}
+              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
               aria-label="Login"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <span className="text-sm font-medium">LOGIN</span>
+              <svg className={`w-3 h-3 transition-transform ${showLoginDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-          )
+
+            {showLoginDropdown && (
+              <div className="absolute right-0 mt-2 w-64 xs:w-72 bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="text-center mb-5">
+                  <h3 className="text-base font-bold text-white mb-1">Access Protocol</h3>
+                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Connect via Telegram</p>
+                </div>
+
+                <div className="flex justify-center items-center min-h-[40px] mb-5 bg-white/5 rounded-xl py-3 border border-white/5">
+                  <div ref={loginContainerRef} />
+                </div>
+
+                <div className="space-y-3">
+                  <Link
+                    href="/help"
+                    className="flex items-center gap-3 text-xs text-zinc-400 hover:text-white transition-colors"
+                    onClick={() => setShowLoginDropdown(false)}
+                  >
+                    <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    How it works
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </header>
