@@ -41,16 +41,16 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 
   return (
     <header className="sticky top-0 z-[100] glass px-4 sm:px-8 md:px-16 py-4 md:py-5 flex items-center justify-between noise">
-      <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0">
-        <div className="bg-white text-black px-1.5 py-0.5 font-black text-base sm:text-xl tracking-tighter leading-none select-none">
+      <Link href="/" className="flex items-center space-x-1.5 sm:space-x-3 hover:opacity-80 transition-opacity flex-shrink-0">
+        <div className="bg-white text-black px-1.5 py-0.5 font-black text-sm sm:text-xl tracking-tighter leading-none select-none">
           404
         </div>
-        <span className="hidden xs:block text-lg sm:text-2xl font-black tracking-tighter uppercase font-sans">BASED404</span>
+        <span className="text-sm sm:text-2xl font-black tracking-tighter uppercase font-sans">BASED404</span>
       </Link>
 
-      <div className="flex items-center gap-1.5 sm:gap-4 overflow-hidden">
-        <div className="hidden sm:flex items-center bg-white/5 border border-white/10 px-2 sm:px-4 py-1 rounded-full whitespace-nowrap">
-          <span className="text-[7px] sm:text-[10px] font-bold tracking-widest uppercase opacity-80">
+      <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink min-w-0">
+        <div className="flex items-center bg-white/5 border border-white/10 px-2 sm:px-4 py-1 rounded-full whitespace-nowrap overflow-hidden">
+          <span className="text-[6px] xs:text-[7px] sm:text-[10px] font-bold tracking-widest uppercase opacity-80">
             <LiveUserCounter />
           </span>
         </div>
@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
               <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span className="text-xs sm:text-sm font-medium text-cyan-300 truncate max-w-[80px] sm:max-w-[150px]">
+              <span className="text-[10px] sm:text-sm font-medium text-cyan-300 truncate max-w-[60px] xs:max-w-[100px] sm:max-w-[150px]">
                 {user.username ? `@${user.username}` : user.name}
               </span>
             </button>
