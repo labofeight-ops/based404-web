@@ -63,7 +63,7 @@ const NeuralTerminal: React.FC<NeuralTerminalProps> = ({ activeProtocolIndex }) 
     if (!input.trim() || loading) return
 
     const userMsg: Message = { role: "user", text: input }
-    setMessages((prev) => [...prev, userMsg])
+    setMessages((prev: Message[]) => [...prev, userMsg])
     setInput("")
     setLoading(true)
 
@@ -83,9 +83,9 @@ const NeuralTerminal: React.FC<NeuralTerminalProps> = ({ activeProtocolIndex }) 
       })
 
       const modelText = response.text || "SIGNAL_LOST: Vibe Interrupted."
-      setMessages((prev) => [...prev, { role: "model", text: modelText }])
+      setMessages((prev: Message[]) => [...prev, { role: "model", text: modelText }])
     } catch (err) {
-      setMessages((prev) => [
+      setMessages((prev: Message[]) => [
         ...prev,
         { role: "model", text: "ERROR: Corporate Middleware tried to block us. Re-syncing the flow..." },
       ])
@@ -128,8 +128,8 @@ const NeuralTerminal: React.FC<NeuralTerminalProps> = ({ activeProtocolIndex }) 
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[85%] p-8 rounded-[40px] ${m.role === "user"
-                    ? "bg-white/5 border border-white/10 text-white/80"
-                    : "bg-cyan-400/[0.04] border border-cyan-400/30 text-white shadow-[0_0_30px_rgba(34,211,238,0.05)]"
+                  ? "bg-white/5 border border-white/10 text-white/80"
+                  : "bg-cyan-400/[0.04] border border-cyan-400/30 text-white shadow-[0_0_30px_rgba(34,211,238,0.05)]"
                   }`}
               >
                 <div className="text-[9px] font-black tracking-[4px] uppercase opacity-30 mb-3">
