@@ -135,7 +135,7 @@ export default function Dashboard() {
                         <div>
                             <p className="text-zinc-500 text-sm">Plan</p>
                             <p className={`text-2xl font-black ${user.subscription?.toUpperCase() === 'OVERDOSED' ? 'text-purple-400' :
-                                    user.subscription?.toUpperCase() === 'DOSED' ? 'text-cyan-400' : ''
+                                user.subscription?.toUpperCase() === 'DOSED' ? 'text-cyan-400' : ''
                                 }`}>
                                 {user.subscription || 'FREE'}
                             </p>
@@ -158,9 +158,9 @@ export default function Dashboard() {
                     </div>
                     <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
                         <p className="text-zinc-500 text-sm">Active agent</p>
-                        <p className={`text-2xl font-black ${user.agent === 'C-100' ? 'text-blue-400' :
-                                user.agent === 'THC-1' ? 'text-green-400' :
-                                    user.agent === 'MOLLY-X' ? 'text-pink-400' : 'text-zinc-400'
+                        <p className={`text-2xl font-black ${user.agent === 'GHOST-7' ? 'text-white' :
+                            user.agent === 'VOID-9' ? 'text-emerald-400' :
+                                user.agent === 'PULSE-3' ? 'text-rose-400' : 'text-zinc-400'
                             }`}>
                             {user.agent || 'None'}
                         </p>

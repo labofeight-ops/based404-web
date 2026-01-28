@@ -16,19 +16,19 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
 }) => {
   const protocols: ProtocolConfig[] = [
     {
-      name: "C-100",
+      name: "GHOST-7",
       color: "#FFFFFF",
       dur: "0.7s",
       lineClass: "opacity-100",
     },
     {
-      name: "THC-1",
+      name: "VOID-9",
       color: "#10b981",
       dur: "2.5s",
       lineClass: "opacity-40",
     },
     {
-      name: "MOLLY-X",
+      name: "PULSE-3",
       color: "#f43f5e",
       dur: "1.5s",
       lineClass: "opacity-70",
@@ -142,9 +142,8 @@ const SystemVisualizer: React.FC<{ activeIndex: number; onIndexChange: (index: n
               >
                 <button
                   onClick={() => onIndexChange(i)}
-                  className={`w-[120px] h-[45px] border rounded-lg transition-all duration-500 flex flex-col items-center justify-center backdrop-blur-md overflow-hidden ${
-                    safeActiveIndex === i ? "bg-white/10" : "bg-black/40 border-white/5 opacity-40 hover:opacity-100"
-                  }`}
+                  className={`w-[120px] h-[45px] border rounded-lg transition-all duration-500 flex flex-col items-center justify-center backdrop-blur-md overflow-hidden ${safeActiveIndex === i ? "bg-white/10" : "bg-black/40 border-white/5 opacity-40 hover:opacity-100"
+                    }`}
                   style={{ borderColor: safeActiveIndex === i ? p.color : "" }}
                 >
                   <span

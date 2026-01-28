@@ -3,11 +3,11 @@ import React from 'react';
 const Marquee: React.FC = () => {
   const testimonials = [
     {
-      quote: "The C-100 protocol is basically a cheat code. I stopped arguing with regular bots and started actually getting work done in half the time.",
+      quote: "The GHOST-7 protocol is basically a cheat code. I stopped arguing with regular bots and started actually getting work done in half the time.",
       author: "Alex V., Lead Quant"
     },
     {
-      quote: "THC-1 dissolved every mental block I had. We pivot faster, think wilder, and the competitors are still stuck in their manual.",
+      quote: "VOID-9 dissolved every mental block I had. We pivot faster, think wilder, and the competitors are still stuck in their manual.",
       author: "Marcus T., Founder"
     },
     {
@@ -15,7 +15,7 @@ const Marquee: React.FC = () => {
       author: "Elena R., Advisor"
     },
     {
-      quote: "MOLLY-X strategic empathy is unfair. I walked into the board meeting knowing exactly what everyone was scared to say.",
+      quote: "PULSE-3 strategic empathy is unfair. I walked into the board meeting knowing exactly what everyone was scared to say.",
       author: "Sarah C., CTO"
     },
     {
@@ -36,13 +36,13 @@ const Marquee: React.FC = () => {
             <div className="glass p-8 md:p-12 rounded-[40px] md:rounded-[60px] flex flex-col justify-between w-[320px] h-[320px] md:w-[500px] md:h-auto whitespace-normal group transition-all duration-700 hover:border-white/20 hover:bg-white/[0.03]">
               <div className="space-y-6">
                 <div className="flex space-x-2">
-                  {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 bg-cyan-400 opacity-40 rounded-full shadow-[0_0_8px_cyan]"></div>)}
+                  {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 bg-cyan-400 opacity-40 rounded-full shadow-[0_0_8px_cyan]"></div>)}
                 </div>
                 <p className="text-sm md:text-xl font-light text-neutral-300 leading-relaxed group-hover:text-white transition-colors duration-500 italic">
                   "{item.quote}"
                 </p>
               </div>
-              
+
               <div className="flex items-center space-x-4 mt-8">
                 <div className="h-[1px] w-6 bg-white/20"></div>
                 <span className="text-[10px] md:text-[12px] font-black tracking-[4px] uppercase text-white/40 group-hover:text-cyan-400 transition-colors">

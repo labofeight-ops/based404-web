@@ -88,7 +88,7 @@ export default function SubscriptionPage() {
 
                         <ul className="space-y-2 mb-6 text-sm">
                             <li className="text-zinc-400">✓ 10 doses/day</li>
-                            <li className="text-zinc-400">✓ 1 agent (C-100)</li>
+                            <li className="text-zinc-400">✓ 1 agent (GHOST-7)</li>
                             <li className="text-zinc-600">✗ No web search</li>
                             <li className="text-zinc-600">✗ No memory</li>
                             <li className="text-zinc-600">✗ No reminders</li>

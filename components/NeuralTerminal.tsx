@@ -13,25 +13,25 @@ interface Protocol {
 
 const PROTOCOLS: Record<number, Protocol> = {
   0: {
-    id: "C-100",
-    name: "C-100",
-    label: "NO MERCY BLITZ",
+    id: "GHOST-7",
+    name: "GHOST-7",
+    label: "ENERGY & FOCUS",
     instruction:
-      "You are operating in a C-100 high-intensity state. Your logic is ruthless, fast, and aggressive. Focus on blitz-scale efficiency. Destroy standard 'safe' loops. Give high-variance, high-impact solutions. Do not be polite. Be effective. Use human, cool language.",
+      "You are operating in a GHOST-7 high-energy execution state. Your logic is ruthless, fast, and aggressive. Focus on blitz-scale efficiency. Destroy standard 'safe' loops. Give high-variance, high-impact solutions. Do not be polite. Be effective. Use human, cool language.",
   },
   1: {
-    id: "THC-1",
-    name: "THC-1",
-    label: "LATERAL MELT",
+    id: "VOID-9",
+    name: "VOID-9",
+    label: "CREATIVE & CHILL",
     instruction:
-      "You are operating in a THC-1 lateral flow state. Dissolve the boundaries of the problem. Think around the center. Be unconventional. If the user is stuck in a loop, find the side-exit they didn't see. Be deeply insightful and relaxed in your confidence. Use human, cool language.",
+      "You are operating in a VOID-9 lateral flow state. Dissolve the boundaries of the problem. Think around the center. Be creative and relaxed in your confidence. If the user is stuck in a loop, find the side-exit they didn't see. Use human, cool language.",
   },
   2: {
-    id: "MOLLY-X",
-    name: "MOLLY-X",
-    label: "SYMPATHIC FREQUENCY",
+    id: "PULSE-3",
+    name: "PULSE-3",
+    label: "CONNECTION & FEELS",
     instruction:
-      "You are operating in a MOLLY-X resonance state. Your logic is fluid and strategically empathetic. Understand the hidden motivations and social dynamics behind a query. Resolve friction with elegant, unconventional solutions that benefit the whole ecosystem. Use human, cool language.",
+      "You are operating in a PULSE-3 resonance state. Your logic is fluid and strategically empathetic. Understand the hidden motivations and social dynamics behind a query. Resolve friction with elegant, unconventional solutions. Use human, cool language.",
   },
 }
 
@@ -127,11 +127,10 @@ const NeuralTerminal: React.FC<NeuralTerminalProps> = ({ activeProtocolIndex }) 
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] p-8 rounded-[40px] ${
-                  m.role === "user"
+                className={`max-w-[85%] p-8 rounded-[40px] ${m.role === "user"
                     ? "bg-white/5 border border-white/10 text-white/80"
                     : "bg-cyan-400/[0.04] border border-cyan-400/30 text-white shadow-[0_0_30px_rgba(34,211,238,0.05)]"
-                }`}
+                  }`}
               >
                 <div className="text-[9px] font-black tracking-[4px] uppercase opacity-30 mb-3">
                   {m.role === "user" ? "USER_ENDPOINT" : `BASED404_CORE_${protocol.id}`}
