@@ -10,8 +10,8 @@ import { GL } from "@/components/gl"
 const mockUser = {
   isLoggedIn: false, // Set to true to test logged-in state
   username: "shadow_trader",
-  plan: "DOSED",
-  creditsLeft: 247,
+  plan: "OVERDOSED",
+  creditsLeft: 600,
   currentState: "VOID-9 Active",
   doseHistory: [
     { agent: "GHOST-7", timestamp: "2026-01-06 14:23" },

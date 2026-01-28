@@ -20,9 +20,11 @@ const LiveUserCounter = () => {
     }, [])
 
     return (
-        <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-            <span>DOSED USERS: {count.toLocaleString()}</span>
+        <div className="flex items-center gap-1 sm:gap-2">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
+            <span className="tabular-nums">
+                <span className="hidden xs:inline">DOSED </span>USERS: {count.toLocaleString()}
+            </span>
         </div>
     )
 }

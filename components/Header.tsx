@@ -40,18 +40,17 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
   };
 
   return (
-    <header className="sticky top-0 z-[100] glass px-4 sm:px-8 md:px-16 py-4 md:py-5 flex items-center justify-between">
-      <Link href="/" className="flex items-center space-x-2 sm:space-x-4 hover:opacity-80 transition-opacity">
-        <div className="bg-white text-black px-1.5 sm:px-2 py-0.5 font-black text-base sm:text-xl tracking-tighter leading-none select-none">
+    <header className="sticky top-0 z-[100] glass px-4 sm:px-8 md:px-16 py-4 md:py-5 flex items-center justify-between noise">
+      <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0">
+        <div className="bg-white text-black px-1.5 py-0.5 font-black text-base sm:text-xl tracking-tighter leading-none select-none">
           404
         </div>
-        <span className="text-lg sm:text-2xl font-black tracking-tighter uppercase font-sans">BASED404</span>
+        <span className="hidden xs:block text-lg sm:text-2xl font-black tracking-tighter uppercase font-sans">BASED404</span>
       </Link>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center space-x-2 sm:space-x-3 bg-white/5 border border-white/10 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full">
-          <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-rose-500 rounded-full status-pulse shadow-[0_0_10px_#f43f5e]"></div>
-          <span className="text-[8px] sm:text-[10px] font-bold tracking-[2px] sm:tracking-[3px] uppercase opacity-80">
+      <div className="flex items-center gap-1.5 sm:gap-4 overflow-hidden">
+        <div className="hidden sm:flex items-center bg-white/5 border border-white/10 px-2 sm:px-4 py-1 rounded-full whitespace-nowrap">
+          <span className="text-[7px] sm:text-[10px] font-bold tracking-widest uppercase opacity-80">
             <LiveUserCounter />
           </span>
         </div>
@@ -61,13 +60,13 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/40 hover:bg-cyan-500/30 transition-colors"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-cyan-500/20 border border-cyan-500/40 hover:bg-cyan-500/30 transition-colors flex-shrink-0"
               aria-label="User menu"
             >
               <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span className="text-sm font-medium text-cyan-300">
+              <span className="text-xs sm:text-sm font-medium text-cyan-300 truncate max-w-[80px] sm:max-w-[150px]">
                 {user.username ? `@${user.username}` : user.name}
               </span>
             </button>
