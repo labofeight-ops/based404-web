@@ -12,14 +12,18 @@ import NodeProcessFlow from "@/components/NodeProcessFlow"
 import LobotomyVsOverride from "@/components/LobotomyVsOverride"
 import Footer from "@/components/Footer"
 import { GL } from "@/components/gl"
+import LoginModal from "@/components/LoginModal"
 import HowItWorks from "@/components/HowItWorks"
 
 export default function Page() {
   const [activeProtocolIndex, setActiveProtocolIndex] = useState(0)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const handleProtocolChange = (index: number) => {
     setActiveProtocolIndex(index)
   }
+
+  const openLoginModal = () => setIsLoginModalOpen(true)
 
   return (
     <div className="flex flex-col w-full min-h-screen relative overflow-x-hidden">
@@ -46,7 +50,7 @@ export default function Page() {
 
 
         <section className="pb-[60px]">
-          <FrequencyGrid onSelect={handleProtocolChange} />
+          <FrequencyGrid onSelect={handleProtocolChange} onLoginClick={openLoginModal} />
         </section>
 
         <section className="bg-black">
@@ -54,7 +58,7 @@ export default function Page() {
         </section>
 
         <section className="bg-black">
-          <OverdosePlans />
+          <OverdosePlans onLoginClick={openLoginModal} />
         </section>
 
         <section className="bg-black">
@@ -87,6 +91,11 @@ export default function Page() {
       <div className="relative z-10">
         <Footer />
       </div>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </div>
   )
 }
