@@ -99,7 +99,7 @@ const LobotomyVsOverride: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-12">
           {/* LEFT CARD: Standard AI */}
-          <div className="glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden">
+          <div className="glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden max-w-full">
             <div className="mb-8 text-center z-10">
               <h3 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic text-neutral-500">
                 ChatGPT
@@ -134,7 +134,7 @@ const LobotomyVsOverride: React.FC = () => {
 
           {/* RIGHT CARD: BASED404 */}
           <div
-            className={`glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden border ${getBorderColor()} transition-all duration-700`}
+            className={`glass relative aspect-square md:aspect-auto md:h-[520px] rounded-[30px] md:rounded-[50px] p-6 md:p-12 flex flex-col overflow-hidden border ${getBorderColor()} transition-all duration-700 max-w-full`}
           >
             <div
               className={`absolute w-48 h-48 blur-[80px] opacity-20 transition-all duration-700 ${getGlowColor()} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}

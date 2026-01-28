@@ -13,7 +13,7 @@ const NodeProcessFlow: React.FC = () => {
           </h2>
         </div>
 
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-0 lg:justify-between max-w-6xl mx-auto overflow-visible">
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-0 lg:justify-between max-w-6xl mx-auto overflow-x-hidden md:overflow-visible">
           {/* Node 1: Connect */}
           <div className="relative z-20 flex flex-col items-center text-center group">
             <div className="glass w-44 h-44 sm:w-52 sm:h-52 rounded-[30px] sm:rounded-[40px] flex flex-col items-center justify-center p-4 sm:p-6 transition-all duration-500 hover:scale-105 bg-black/80 backdrop-blur-md">

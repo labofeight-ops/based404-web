@@ -27,7 +27,7 @@ export default function Page() {
   const openLoginModal = () => setIsLoginModalOpen(true)
 
   return (
-    <div className="flex flex-col w-full min-h-screen relative">
+    <div className="flex flex-col w-full min-h-screen relative overflow-x-hidden">
       <Header onLoginClick={openLoginModal} />
 
       <div className="fixed inset-0 z-0">
