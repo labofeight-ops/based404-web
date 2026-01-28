@@ -70,17 +70,21 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
                 FREE
               </h3>
               <p className="text-neutral-400 text-xs sm:text-sm mb-6 leading-relaxed">
-                10 doses/day. Core states. Test the vibe or level up.
+                25 doses/day. Access to all features (except live web search). Access to all 3 agents.
               </p>
 
               <div className="flex-1 space-y-3 mb-8">
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-neutral-300 text-xs sm:text-sm">Core AI states only</span>
+                  <span className="text-neutral-300 text-xs sm:text-sm">All 3 AI agents (Full Power)</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-neutral-300 text-xs sm:text-sm">Basic responses</span>
+                  <span className="text-neutral-300 text-xs sm:text-sm">Hybrid blends unlocked</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-neutral-300 text-xs sm:text-sm">Smart reminders + memory</span>
                 </div>
               </div>
 
@@ -137,12 +141,9 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
                 </div>
               </div>
 
-              <button
-                onClick={handlePlanClick}
-                className="block w-full py-3 sm:py-4 px-6 bg-cyan-400/20 border-2 border-cyan-400 text-cyan-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-cyan-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] text-center"
-              >
-                DOSE UP
-              </button>
+              <div className="block w-full py-3 sm:py-4 px-6 bg-cyan-400/5 border-2 border-cyan-400/20 text-cyan-400/50 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl text-center">
+                BETA COMING SOON
+              </div>
             </div>
           </div>
 
@@ -196,12 +197,9 @@ const OverdosePlans: React.FC<OverdosePlansProps> = ({ onLoginClick }) => {
                 </div>
               </div>
 
-              <button
-                onClick={handlePlanClick}
-                className="block w-full py-3 sm:py-4 px-6 bg-purple-400/20 border-2 border-purple-400 text-purple-400 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl transition-all duration-300 hover:bg-purple-400 hover:text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(192,132,252,0.6)] text-center"
-              >
-                INJECT ME
-              </button>
+              <div className="block w-full py-3 sm:py-4 px-6 bg-purple-400/5 border-2 border-purple-400/20 text-purple-400/50 font-black text-sm sm:text-base uppercase tracking-[2px] rounded-xl text-center">
+                BETA COMING SOON
+              </div>
             </div>
           </div>
         </div>

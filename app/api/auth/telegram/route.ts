@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
             // Create new user
             await sql`
                 INSERT INTO users (user_id, username, name, credits, subscription, session_token, plan_selected)
-                VALUES (${userId}, ${username}, ${name}, 50, 'FREE', ${sessionToken}, FALSE)
+                VALUES (${userId}, ${username}, ${name}, 25, 'FREE', ${sessionToken}, FALSE)
             `;
         } else {
             // Update session for existing user

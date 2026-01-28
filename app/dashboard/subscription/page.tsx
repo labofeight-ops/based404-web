@@ -87,11 +87,11 @@ export default function SubscriptionPage() {
                         <p className="text-3xl font-black mb-4">$0</p>
 
                         <ul className="space-y-2 mb-6 text-sm">
-                            <li className="text-zinc-400">✓ 10 doses/day</li>
-                            <li className="text-zinc-400">✓ 1 agent (GHOST-7)</li>
-                            <li className="text-zinc-600">✗ No web search</li>
-                            <li className="text-zinc-600">✗ No memory</li>
-                            <li className="text-zinc-600">✗ No reminders</li>
+                            <li className="text-zinc-400">✓ 25 doses/day</li>
+                            <li className="text-zinc-400">✓ All 3 agents</li>
+                            <li className="text-zinc-400">✓ Hybrid blends</li>
+                            <li className="text-zinc-400">✓ Smart reminders</li>
+                            <li className="text-zinc-600">✗ No live web search</li>
                         </ul>
 
                         {currentRank > 0 && (
@@ -126,9 +126,9 @@ export default function SubscriptionPage() {
                         </ul>
 
                         {currentRank < 1 && (
-                            <button className="w-full py-2.5 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-colors">
-                                Get DOSED
-                            </button>
+                            <div className="w-full py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-600 text-center font-bold rounded-lg cursor-not-allowed">
+                                Coming Soon
+                            </div>
                         )}
                         {currentRank > 1 && (
                             <button className="w-full py-2.5 border border-cyan-500 text-cyan-400 rounded-lg hover:bg-cyan-500/10 transition-colors">
@@ -158,9 +158,9 @@ export default function SubscriptionPage() {
                         </ul>
 
                         {currentRank < 2 && (
-                            <button className="w-full py-2.5 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-colors">
-                                Go OVERDOSED
-                            </button>
+                            <div className="w-full py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-600 text-center font-bold rounded-lg cursor-not-allowed">
+                                Coming Soon
+                            </div>
                         )}
                     </div>
                 </div>

@@ -25,12 +25,12 @@ export default function PlanSelectionModal({
             name: 'FREE',
             price: '$0',
             period: '/forever',
-            credits: '50',
+            credits: '25',
             features: [
-                '1 Agent Access',
-                'Basic Responses',
-                '50 Daily Credits',
-                'Community Support'
+                'All 3 AI Agents',
+                'Hybrid Blends',
+                '25 Daily Credits',
+                'Smart Reminders'
             ]
         },
         {
@@ -116,15 +116,15 @@ export default function PlanSelectionModal({
                     {plans.map(plan => (
                         <div
                             key={plan.name}
-                            onClick={() => setSelectedPlan(plan.name)}
                             className={`
-                relative p-6 rounded-2xl border-2 cursor-pointer transition-all
-                ${selectedPlan === plan.name
+                                relative p-6 rounded-2xl border-2 cursor-pointer transition-all
+                                ${selectedPlan === plan.name
                                     ? 'border-cyan-500 bg-cyan-500/10 scale-105'
-                                    : 'border-zinc-800 bg-zinc-900 hover:border-zinc-700'
+                                    : plan.name === 'FREE' ? 'border-zinc-800 bg-zinc-900 hover:border-zinc-700' : 'border-zinc-800/30 bg-zinc-900/50 opacity-50 grayscale cursor-not-allowed'
                                 }
-                ${plan.highlight ? 'ring-2 ring-cyan-500/30' : ''}
-              `}
+                                ${plan.highlight ? 'ring-2 ring-cyan-500/30' : ''}
+                            `}
+                            onClick={() => plan.name === 'FREE' ? setSelectedPlan(plan.name) : null}
                         >
                             {plan.badge && (
                                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -175,6 +175,6 @@ export default function PlanSelectionModal({
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
