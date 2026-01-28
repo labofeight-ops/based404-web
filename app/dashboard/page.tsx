@@ -5,9 +5,18 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Link from 'next/link';
 
+interface UserData {
+    user_id: number;
+    username: string;
+    name: string;
+    credits: number;
+    subscription: string;
+    agent?: string;
+}
+
 export default function Dashboard() {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [nickname, setNickname] = useState('');
     const [saving, setSaving] = useState(false);
@@ -19,7 +28,7 @@ export default function Dashboard() {
         return () => clearInterval(interval);
     }, []);
 
-    const fetchUserData = async (silent = false) => {
+    const fetchUserData = async (silent: boolean = false) => {
         const sessionToken = localStorage.getItem('session_token');
         if (!sessionToken) {
             router.push('/');

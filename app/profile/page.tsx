@@ -12,13 +12,13 @@ const mockUser = {
   username: "shadow_trader",
   plan: "DOSED",
   creditsLeft: 247,
-  currentState: "THC-1 Active",
+  currentState: "VOID-9 Active",
   doseHistory: [
-    { agent: "C-100", timestamp: "2026-01-06 14:23" },
-    { agent: "THC-1", timestamp: "2026-01-06 09:15" },
-    { agent: "MOLLY-X", timestamp: "2026-01-05 22:47" },
-    { agent: "C-100", timestamp: "2026-01-05 16:32" },
-    { agent: "THC-1", timestamp: "2026-01-04 11:09" },
+    { agent: "GHOST-7", timestamp: "2026-01-06 14:23" },
+    { agent: "VOID-9", timestamp: "2026-01-06 09:15" },
+    { agent: "PULSE-3", timestamp: "2026-01-05 22:47" },
+    { agent: "GHOST-7", timestamp: "2026-01-05 16:32" },
+    { agent: "VOID-9", timestamp: "2026-01-04 11:09" },
   ],
 }
 

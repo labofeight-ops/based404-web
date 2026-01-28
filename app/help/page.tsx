@@ -26,7 +26,7 @@ export default function HelpPage() {
         },
         {
             question: 'What\'s Blend Mode?',
-            answer: 'All 3 agents responding together. C-100\'s speed + THC-1\'s depth + MOLLY-X\'s warmth. Three minds, one answer. Chaotic genius.'
+            answer: 'All 3 agents responding together. GHOST-7\'s speed + VOID-9\'s depth + PULSE-3\'s warmth. Three minds, one answer. Chaotic genius.'
         },
         {
             question: 'Does it actually remember me?',

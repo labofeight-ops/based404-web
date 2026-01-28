@@ -11,19 +11,19 @@ interface ResponseState {
 
 const responses: ResponseState[] = [
   {
-    agent: "C-100",
+    agent: "GHOST-7",
     response:
       "SILENCE IS THE WEAPON. STATE YOUR PRICE, THEN SHUT UP. DO NOT BLINK. LET THE SILENCE ROT THEIR CONFIDENCE UNTIL THEY CRUMBLE. EXECUTE.",
     themeColor: "red",
   },
   {
-    agent: "THC-1",
+    agent: "VOID-9",
     response:
       "just zone out... look at them like you're bored... like you'd rather be anywhere else... indifference makes people desperate for validation...",
     themeColor: "green",
   },
   {
-    agent: "MOLLY-X",
+    agent: "PULSE-3",
     response:
       "Love bomb them!! Compliment them until they lower their guard, then BOOM! Drop the hard offer while they are smiling! Kill them with kindness!",
     themeColor: "pink",
