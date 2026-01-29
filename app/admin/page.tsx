@@ -30,6 +30,11 @@ interface AnalyticsData {
         liveVisitors: number;
         liveChatting: number;
         mrr: number;
+        xUsage: {
+            remaining: string | number;
+            limit: string | number;
+            reset: string;
+        };
     };
     subscriptions: Array<{ subscription: string; count: string }>;
     agents: Array<{ chosen_agent: string; count: string }>;
@@ -65,6 +70,7 @@ export default function AdminPage() {
 
     const fetchData = async () => {
         setLoading(true);
+        console.log('[FRONTEND] Fetching analytics...');
         try {
             const response = await fetch('/api/admin/analytics', {
                 headers: {
@@ -73,12 +79,16 @@ export default function AdminPage() {
             });
             if (response.ok) {
                 const json = await response.json();
+                console.log('[FRONTEND] Received data:', json);
                 setData(json);
+                setError('');
             } else {
-                setError('Failed to fetch data');
+                const errJson = await response.json().catch(() => ({}));
+                setError(`API Error: ${response.status} - ${errJson.details || errJson.error || 'Unknown error'}`);
             }
-        } catch (err) {
-            setError('An error occurred');
+        } catch (err: any) {
+            console.error('[FRONTEND] Fetch error:', err);
+            setError(`Network Error: ${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -114,7 +124,7 @@ export default function AdminPage() {
                                 autoFocus
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
+                        {error && <p className="text-red-500 text-sm text-center font-medium bg-red-500/10 p-4 rounded-2xl border border-red-500/20">{error}</p>}
                         <button
                             type="submit"
                             className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-black py-4 rounded-2xl transition-all uppercase tracking-wider flex items-center justify-center gap-2"
@@ -130,13 +140,17 @@ export default function AdminPage() {
     if (loading && !data) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+                <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+                    <p className="text-cyan-500 font-black uppercase italic tracking-widest text-xs animate-pulse">Syncing Neural Data...</p>
+                </div>
             </div>
         );
     }
 
-    const arpu = data ? (data.stats.mrr / (data.stats.totalUsers || 1)).toFixed(2) : 0;
-    const ltv = (parseFloat(arpu.toString()) * 24).toFixed(0); // Arbitrary 24 month LTV projection
+    const totalUsers = data?.stats.totalUsers || 0;
+    const arpu = data ? (data.stats.mrr / (totalUsers || 1)).toFixed(2) : 0;
+    const ltv = (parseFloat(arpu.toString()) * 24).toFixed(0);
 
     return (
         <div className="min-h-screen bg-black text-white p-4 sm:p-8 font-sans selection:bg-cyan-500/30 overflow-x-hidden">
@@ -148,9 +162,15 @@ export default function AdminPage() {
                             <Shield className="text-cyan-400 w-10 h-10" />
                             NEURAL ASSETS <span className="text-cyan-400">ADMIN</span>
                         </h1>
-                        <p className="text-neutral-500 font-medium tracking-widest text-[10px]">REAL-TIME PERFORMANCE MONITORING v2.0</p>
+                        <p className="text-neutral-500 font-medium tracking-widest text-[10px]">REAL-TIME PERFORMANCE MONITORING v2.1</p>
                     </div>
                     <div className="flex items-center gap-3 bg-neutral-900/50 p-2 rounded-2xl border border-neutral-800">
+                        {error && (
+                            <div className="px-4 py-2 bg-red-500/10 rounded-xl border border-red-500/20 flex items-center gap-2">
+                                <Activity className="w-3 h-3 text-red-500" />
+                                <span className="text-[10px] text-red-500 font-bold uppercase truncate max-w-[200px]">{error}</span>
+                            </div>
+                        )}
                         <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-xl border border-green-500/20">
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
                             <span className="text-green-500 text-xs font-bold uppercase tracking-widest">
@@ -167,10 +187,10 @@ export default function AdminPage() {
                 </div>
 
                 {/* STATS GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <StatsCard
                         title="TOTAL ASSETS"
-                        value={data?.stats.totalUsers || 0}
+                        value={totalUsers}
                         icon={<Users className="w-5 h-5" />}
                         color="cyan"
                         sub={`ARPU: $${arpu}`}
@@ -194,7 +214,14 @@ export default function AdminPage() {
                         value="+24.8%"
                         icon={<TrendingUp className="w-5 h-5" />}
                         color="purple"
-                        sub="Last 14 days"
+                        sub="Last 30 days"
+                    />
+                    <StatsCard
+                        title="X API CREDITS"
+                        value={data?.stats.xUsage?.remaining || 'N/A'}
+                        icon={<Zap className="w-5 h-5" />}
+                        color="cyan"
+                        sub={`LIMIT: ${data?.stats.xUsage?.limit || '?'}`}
                     />
                 </div>
 
@@ -225,7 +252,7 @@ export default function AdminPage() {
                             <div className="absolute top-0 left-0 w-full h-[1px] bg-neutral-800/50" />
                             <div className="absolute top-1/2 left-0 w-full h-[1px] bg-neutral-800/20" />
 
-                            {data?.growthTrend.map((day, idx) => {
+                            {data?.growthTrend && data.growthTrend.length > 0 ? data.growthTrend.map((day, idx) => {
                                 const maxCount = Math.max(...data.growthTrend.map(d => parseInt(d.count)), 1);
                                 const height = (parseInt(day.count) / maxCount) * 100;
                                 return (
@@ -243,8 +270,12 @@ export default function AdminPage() {
                                             {new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                         </span>
                                     </div>
-                                );
-                            })}
+                                )
+                            }) : (
+                                <div className="w-full h-full flex items-center justify-center text-neutral-700 font-black uppercase italic tracking-widest text-sm">
+                                    No Growth Data Synchronized
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -275,7 +306,7 @@ export default function AdminPage() {
                                         <div
                                             className="h-full bg-neutral-700 group-hover:bg-cyan-500 transition-all rounded-full"
                                             style={{
-                                                width: `${(parseInt(ref.count) / (data?.stats.totalUsers || 1)) * 100}%`,
+                                                width: `${(parseInt(ref.count) / (totalUsers || 1)) * 100}%`,
                                                 backgroundColor: ref.source === 'direct' ? '#06b6d4' : (ref.source === 'X' ? '#ffffff' : '#a855f7')
                                             }}
                                         />
@@ -296,21 +327,24 @@ export default function AdminPage() {
                             </h3>
                         </div>
                         <div className="space-y-4">
-                            {['ELITE', 'PRO', 'FREE'].map(tier => {
-                                const sub = data?.subscriptions.find(s => s.subscription === tier) || { subscription: tier, count: '0' };
+                            {['ELITE', 'OVERDOSED', 'PRO', 'DOSED', 'FREE'].map(tier => {
+                                const sub = data?.subscriptions.find(s => s.subscription === tier);
+                                if (!sub && tier !== 'FREE' && tier !== 'PRO' && tier !== 'ELITE') return null;
+
+                                const count = sub ? sub.count : '0';
                                 return (
                                     <div key={tier} className="space-y-2">
                                         <div className="flex justify-between text-xs font-bold">
                                             <span className="text-neutral-300">{tier}</span>
-                                            <span className="text-white">{sub.count}</span>
+                                            <span className="text-white">{count}</span>
                                         </div>
                                         <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
                                             <div
-                                                className={`h-full rounded-full ${tier === 'ELITE' ? 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' :
-                                                    tier === 'PRO' ? 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
+                                                className={`h-full rounded-full ${tier.includes('ELITE') || tier.includes('OVERDOSED') ? 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' :
+                                                    tier.includes('PRO') || tier.includes('DOSED') ? 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
                                                         'bg-neutral-600'
                                                     }`}
-                                                style={{ width: `${(parseInt(sub.count) / (data?.stats.totalUsers || 1)) * 100}%` }}
+                                                style={{ width: `${(parseInt(count) / (totalUsers || 1)) * 100}%` }}
                                             />
                                         </div>
                                     </div>
@@ -337,7 +371,7 @@ export default function AdminPage() {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-black tracking-widest uppercase">{agent.chosen_agent}</p>
-                                        <p className="text-[10px] text-neutral-500 font-bold uppercase">{Math.round((parseInt(agent.count) / (data?.stats.totalUsers || 1)) * 100)}% Usage</p>
+                                        <p className="text-[10px] text-neutral-500 font-bold uppercase">{Math.round((parseInt(agent.count) / (totalUsers || 1)) * 100)}% Usage</p>
                                     </div>
                                     <span className="text-xs font-mono font-bold text-neutral-400">{agent.count}</span>
                                 </div>
@@ -385,10 +419,6 @@ export default function AdminPage() {
                         <div>
                             <h3 className="text-xl font-black uppercase italic tracking-tighter">Neural Registry</h3>
                             <p className="text-neutral-500 text-[10px] font-bold tracking-widest uppercase mt-1">Full database synchronization successful</p>
-                        </div>
-                        <div className="flex bg-neutral-900 border border-neutral-800 rounded-2xl p-1">
-                            <button className="px-6 py-2 bg-neutral-800 rounded-xl text-xs font-black uppercase text-white tracking-widest">Active Assets</button>
-                            <button className="px-6 py-2 rounded-xl text-xs font-black uppercase text-neutral-500 tracking-widest hover:text-white transition-all">Archived</button>
                         </div>
                     </div>
 
@@ -478,14 +508,15 @@ function StatsCard({ title, value, icon, color, sub }: { title: string; value: s
             </div>
             <div className="space-y-1">
                 <h3 className="text-neutral-500 text-[10px] font-black uppercase tracking-widest">{title}</h3>
-                <p className="text-3xl font-black tracking-tighter group-hover:text-cyan-400 transition-colors uppercase italic">{value}</p>
-                <p className="text-[9px] text-neutral-600 font-bold uppercase tracking-widest italic">{sub}</p>
+                <p className="text-2xl font-black tracking-tighter group-hover:text-cyan-400 transition-colors uppercase italic truncate">{value}</p>
+                <p className="text-[9px] text-neutral-600 font-bold uppercase tracking-widest italic truncate">{sub}</p>
             </div>
         </div>
     );
 }
 
 function formatSyncTime(dateStr: string) {
+    if (!dateStr) return 'NEVER';
     const date = new Date(dateStr);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
