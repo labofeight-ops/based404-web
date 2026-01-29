@@ -15,6 +15,24 @@ export async function GET(request: NextRequest) {
     console.log('[ADMIN_API] Fetching analytics...');
 
     try {
+        // --- EMERGENCY AUTO-MIGRATION ---
+        // Ensure required columns exist before querying
+        await sql`
+            DO $$ 
+            BEGIN 
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='source') THEN 
+                    ALTER TABLE users ADD COLUMN source TEXT DEFAULT 'direct';
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='created_at') THEN 
+                    ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT NOW();
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='last_active') THEN 
+                    ALTER TABLE users ADD COLUMN last_active TIMESTAMP DEFAULT NOW();
+                END IF;
+            END $$;
+        `.catch(e => console.error('[ADMIN_API] Migration error (non-fatal):', e));
+        // --------------------------------
+
         // 1. Total Users
         const totalUsersResult = await sql`SELECT COUNT(*) as count FROM users`;
         const totalUsers = parseInt(totalUsersResult[0]?.count || '0');
