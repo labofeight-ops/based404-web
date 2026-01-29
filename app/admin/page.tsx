@@ -507,12 +507,135 @@ export default function AdminPage() {
                                         <td className="px-4 py-4 text-[10px] text-neutral-400 font-bold">
                                             {formatSyncTime(user.last_active)}
                                         </td>
+                                        <td className="px-4 py-4 text-right">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setIsUserModalOpen(true);
+                                                }}
+                                                className="p-1 hover:bg-white/10 rounded transition-colors"
+                                            >
+                                                <Edit2 className="w-3 h-3 text-cyan-400" />
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
+                {/* USER MANAGEMENT MODAL */}
+                {isUserModalOpen && selectedUser && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl custom-scrollbar relative">
+                            {modalActionLoading && (
+                                <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] z-50 flex items-center justify-center rounded-3xl">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+                                </div>
+                            )}
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 className="text-2xl font-black text-white uppercase italic">User Profile</h2>
+                                    <p className="text-neutral-500 text-xs font-bold">ID: {selectedUser.user_id}</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsUserModalOpen(false)}
+                                    className="p-2 hover:bg-neutral-800 rounded-full transition-colors"
+                                >
+                                    <X className="w-6 h-6 text-neutral-500" />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest">User Details</label>
+                                        <div className="bg-black/50 p-4 rounded-xl border border-neutral-800">
+                                            <p className="text-sm font-bold text-white mb-1">{selectedUser.name || 'No Name'}</p>
+                                            <p className="text-xs text-neutral-400 italic">@{selectedUser.username || 'n/a'}</p>
+                                            <p className="text-xs text-neutral-400 mt-2">Source: {selectedUser.source || 'direct'}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest">Subscription & Credits</label>
+                                        <div className="bg-black/50 p-4 rounded-xl border border-neutral-800 space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs font-bold text-neutral-400">PLAN</span>
+                                                <select
+                                                    className="bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-xs font-bold text-white"
+                                                    defaultValue={selectedUser.subscription}
+                                                    onChange={(e) => handleUpdateUser(selectedUser.user_id, { subscription: e.target.value })}
+                                                >
+                                                    <option value="FREE">FREE</option>
+                                                    <option value="DOSED">DOSED</option>
+                                                    <option value="OVERDOSED">OVERDOSED</option>
+                                                </select>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs font-bold text-neutral-400">CREDITS</span>
+                                                <input
+                                                    type="number"
+                                                    className="bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-xs font-bold text-white w-20 text-right"
+                                                    defaultValue={selectedUser.credits}
+                                                    onBlur={(e) => handleUpdateUser(selectedUser.user_id, { credits: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleDeleteUser(selectedUser.user_id)}
+                                        className="w-full py-3 rounded-xl border border-red-500/30 bg-red-500/5 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                                    >
+                                        Delete User Account
+                                    </button>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest uppercase italic">Character Keywords (Memory)</label>
+                                        <div className="bg-black/50 p-4 rounded-xl border border-neutral-800 min-h-[150px] max-h-[300px] overflow-y-auto">
+                                            {(() => {
+                                                try {
+                                                    const memories = typeof selectedUser.memory === 'string' ? JSON.parse(selectedUser.memory) : (selectedUser.memory || []);
+                                                    if (Array.isArray(memories) && memories.length > 0) {
+                                                        return (
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {memories.map((m: string, i: number) => (
+                                                                    <span key={i} className="px-2 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded text-[10px] text-cyan-400 font-bold">
+                                                                        {m}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        );
+                                                    }
+                                                } catch (e) { }
+                                                return <p className="text-xs text-neutral-600 italic">No memories captured yet.</p>;
+                                            })()}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest">Preferences & Meta</label>
+                                        <div className="bg-black/50 p-4 rounded-xl border border-neutral-800 overflow-x-auto">
+                                            <pre className="text-[10px] text-neutral-400 font-mono whitespace-pre-wrap">
+                                                {(() => {
+                                                    try {
+                                                        const prefs = typeof selectedUser.preferences === 'string' ? JSON.parse(selectedUser.preferences) : (selectedUser.preferences || {});
+                                                        return JSON.stringify(prefs, null, 2);
+                                                    } catch (e) {
+                                                        return "{}";
+                                                    }
+                                                })()}
+                                            </pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <style jsx global>{`
