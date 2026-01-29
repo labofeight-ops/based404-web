@@ -298,20 +298,31 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="h-64 relative pt-10 px-2 group/chart">
+                        <div className="h-64 relative pt-10 pl-12 pr-2 group/chart">
+                            {/* Y-Axis Labels */}
+                            <div className="absolute top-10 left-0 h-[calc(100%-40px)] flex flex-col justify-between items-end pr-4 pointer-events-none">
+                                {(() => {
+                                    const maxVal = data?.growthTrend ? Math.max(...data.growthTrend.flatMap(d => [parseInt(d.v_count), parseInt(d.s_count)]), 1) : 1;
+                                    const ticks = [maxVal, Math.floor(maxVal * 0.75), Math.floor(maxVal * 0.5), Math.floor(maxVal * 0.25), 0];
+                                    return ticks.map((t, i) => (
+                                        <span key={i} className="text-[9px] font-mono text-neutral-600 font-black">{t}</span>
+                                    ));
+                                })()}
+                            </div>
+
                             {/* Legend */}
                             <div className="absolute top-0 right-0 flex gap-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-[2px] bg-cyan-500 shadow-[0_0_8px_#06b6d4]" />
+                                    <div className="w-3 h-[1px] bg-cyan-500 shadow-[0_0_8px_#06b6d4]" />
                                     <span className="text-[10px] font-black uppercase text-neutral-400">Visitors</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-[2px] bg-purple-500 shadow-[0_0_8px_#a855f7]" />
+                                    <div className="w-3 h-[1px] bg-purple-500 shadow-[0_0_8px_#a855f7]" />
                                     <span className="text-[10px] font-black uppercase text-neutral-400">Signups</span>
                                 </div>
                             </div>
 
-                            <div className="absolute top-10 left-0 w-full h-[calc(100%-40px)] flex flex-col justify-between pointer-events-none opacity-20">
+                            <div className="absolute top-10 left-12 w-[calc(100%-56px)] h-[calc(100%-40px)] flex flex-col justify-between pointer-events-none opacity-20">
                                 <div className="w-full h-[1px] bg-neutral-800" />
                                 <div className="w-full h-[1px] bg-neutral-800" />
                                 <div className="w-full h-[1px] bg-neutral-800" />
@@ -322,45 +333,65 @@ export default function AdminPage() {
                                 <div className="w-full h-full relative">
                                     <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                                         {(() => {
-                                            const maxVal = Math.max(...data.growthTrend.flatMap(d => [parseInt(d.v_count), parseInt(d.s_count)]), 1);
-                                            const pointsV = data.growthTrend.map((d, i) => `${(i / (data.growthTrend.length - 1)) * 100},${100 - (parseInt(d.v_count) / maxVal) * 100}`).join(' ');
-                                            const pointsS = data.growthTrend.map((d, i) => `${(i / (data.growthTrend.length - 1)) * 100},${100 - (parseInt(d.s_count) / maxVal) * 100}`).join(' ');
+                                            const trend = data.growthTrend;
+                                            const maxVal = Math.max(...trend.flatMap(d => [parseInt(d.v_count), parseInt(d.s_count)]), 1);
 
-                                            // Area Gradient Path for Visitors
-                                            const areaV = `${pointsV} 100,100 0,100`;
+                                            // Helper to create smooth bezier path
+                                            const getPath = (vals: number[]) => {
+                                                const points = vals.map((v, i) => ({
+                                                    x: (i / (vals.length - 1)) * 100,
+                                                    y: 100 - (v / maxVal) * 100
+                                                }));
+
+                                                if (points.length < 2) return '';
+
+                                                let d = `M ${points[0].x},${points[0].y}`;
+
+                                                for (let i = 0; i < points.length - 1; i++) {
+                                                    const curr = points[i];
+                                                    const next = points[i + 1];
+                                                    const cp1x = curr.x + (next.x - curr.x) / 3;
+                                                    const cp2x = curr.x + (2 * (next.x - curr.x)) / 3;
+                                                    d += ` C ${cp1x},${curr.y} ${cp2x},${next.y} ${next.x},${next.y}`;
+                                                }
+                                                return d;
+                                            };
+
+                                            const pathV = getPath(trend.map(d => parseInt(d.v_count)));
+                                            const pathS = getPath(trend.map(d => parseInt(d.s_count)));
 
                                             return (
                                                 <>
                                                     <defs>
                                                         <linearGradient id="gradV" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2" />
+                                                            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.1" />
                                                             <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
                                                         </linearGradient>
                                                     </defs>
 
                                                     {/* Visitor Area */}
-                                                    <polygon points={areaV} fill="url(#gradV)" className="transition-all duration-1000" />
+                                                    <path d={`${pathV} L 100,100 L 0,100 Z`} fill="url(#gradV)" className="transition-all duration-1000" />
 
                                                     {/* Visitor Line */}
-                                                    <polyline
+                                                    <path
+                                                        d={pathV}
                                                         fill="none"
                                                         stroke="#06b6d4"
-                                                        strokeWidth="2"
+                                                        strokeWidth="1"
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        points={pointsV}
-                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_4px_rgba(6,182,212,0.3)]"
                                                     />
 
                                                     {/* Signup Line */}
-                                                    <polyline
+                                                    <path
+                                                        d={pathS}
                                                         fill="none"
                                                         stroke="#a855f7"
-                                                        strokeWidth="2"
+                                                        strokeWidth="1"
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        points={pointsS}
-                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_4px_rgba(168,85,247,0.3)]"
                                                     />
                                                 </>
                                             );
@@ -399,25 +430,57 @@ export default function AdminPage() {
                             <Globe className="w-5 h-5 text-purple-500" />
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-6 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
                             {data?.referrers.map(ref => (
                                 <div key={ref.source} className="space-y-2">
                                     <div className="flex justify-between items-end">
                                         <div className="flex items-center gap-2">
-                                            <span className={`w-2 h-2 rounded-full ${ref.source === 'google' ? 'bg-red-500' :
+                                            <span className={`w-1.5 h-1.5 rounded-full ${ref.source === 'google' ? 'bg-red-500' :
                                                 ref.source === 'X' || ref.source === 'twitter' ? 'bg-white' :
                                                     ref.source === 'direct' ? 'bg-cyan-500' : 'bg-purple-500'
                                                 }`} />
-                                            <span className="text-xs font-black uppercase tracking-widest">{ref.source}</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest">{ref.source}</span>
                                         </div>
-                                        <span className="text-xs font-mono text-neutral-400">{ref.count}</span>
+                                        <span className="text-[10px] font-mono text-neutral-400 font-bold">{ref.count}</span>
                                     </div>
-                                    <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
+                                    <div className="w-full bg-neutral-900 h-1 rounded-full overflow-hidden border border-neutral-800">
                                         <div
-                                            className="h-full bg-neutral-700 group-hover:bg-cyan-500 transition-all rounded-full"
+                                            className="h-full transition-all"
                                             style={{
-                                                width: `${(parseInt(ref.count) / (totalUsers || 1)) * 100}%`,
+                                                width: `${(parseInt(ref.count) / (data.stats.totalVisitorsPeriod || 1)) * 100}%`,
                                                 backgroundColor: ref.source === 'direct' ? '#06b6d4' : (ref.source === 'X' ? '#ffffff' : '#a855f7')
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* GEOGRAPHY Breakdown */}
+                    <div className="glass p-8 rounded-[40px] border border-neutral-800/50">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 className="text-xl font-black uppercase italic tracking-tighter text-cyan-400">Geography</h3>
+                                <p className="text-neutral-500 text-[10px] font-bold tracking-widest uppercase">Global Distribution</p>
+                            </div>
+                            <Globe className="w-5 h-5 text-cyan-500" />
+                        </div>
+
+                        <div className="space-y-6 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+                            {data?.countries.map(c => (
+                                <div key={c.country} className="space-y-2">
+                                    <div className="flex justify-between items-end">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest">{c.country}</span>
+                                        </div>
+                                        <span className="text-[10px] font-mono text-neutral-400 font-bold">{c.count}</span>
+                                    </div>
+                                    <div className="w-full bg-neutral-900 h-1 rounded-full overflow-hidden border border-neutral-800">
+                                        <div
+                                            className="h-full bg-cyan-500 transition-all shadow-[0_0_8px_#06b6d4]"
+                                            style={{
+                                                width: `${(parseInt(c.count) / (data.stats.totalVisitorsPeriod || 1)) * 100}%`
                                             }}
                                         />
                                     </div>
