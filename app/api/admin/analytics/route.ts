@@ -30,6 +30,13 @@ export async function GET(request: NextRequest) {
         `;
         const liveVisitors = parseInt(liveVisitorsResult[0].count);
 
+        // 3.1 Live Chatting (Active in last 2 minutes)
+        const liveChattingResult = await sql`
+            SELECT COUNT(*) as count FROM users 
+            WHERE last_active > NOW() - INTERVAL '2 minutes'
+        `;
+        const liveChatting = parseInt(liveChattingResult[0].count);
+
         // 4. Subscription Breakdown
         const subscriptions = await sql`
             SELECT subscription, COUNT(*) as count 
@@ -47,17 +54,36 @@ export async function GET(request: NextRequest) {
         `;
 
         // 6. MRR Calculation
-        // FREE: $0, PRO: $19, ELITE: $39 (Dosed/Overdosed are mapped to PRO/ELITE internally usually)
         let mrr = 0;
-        subscriptions.forEach(sub => {
+        subscriptions.forEach((sub: any) => {
             const count = parseInt(sub.count);
-            if (sub.subscription === 'PRO' || sub.subscription === 'DOSED') mrr += count * 19;
-            if (sub.subscription === 'ELITE' || sub.subscription === 'OVERDOSED') mrr += count * 39;
+            const tier = sub.subscription.toUpperCase();
+            if (tier === 'PRO' || tier === 'DOSED') mrr += count * 19;
+            if (tier === 'ELITE' || tier === 'OVERDOSED') mrr += count * 39;
         });
 
-        // 7. Recent Users (Last 10)
+        // 7. Referrer Breakdown
+        const referrers = await sql`
+            SELECT source, COUNT(*) as count 
+            FROM users 
+            GROUP BY source
+            ORDER BY count DESC
+        `;
+
+        // 8. Daily Growth Trend (Last 14 days)
+        const growthTrend = await sql`
+            SELECT 
+                DATE_TRUNC('day', created_at) as date, 
+                COUNT(*) as count 
+            FROM users 
+            WHERE created_at > NOW() - INTERVAL '14 days'
+            GROUP BY date 
+            ORDER BY date ASC
+        `;
+
+        // 9. Recent Users (Last 10)
         const recentUsers = await sql`
-            SELECT user_id, username, name, subscription, last_active 
+            SELECT user_id, username, name, subscription, source, last_active 
             FROM users 
             ORDER BY last_active DESC 
             LIMIT 10
@@ -68,10 +94,13 @@ export async function GET(request: NextRequest) {
                 totalUsers,
                 active24h,
                 liveVisitors,
+                liveChatting,
                 mrr
             },
             subscriptions,
             agents,
+            referrers,
+            growthTrend,
             recentUsers
         });
 

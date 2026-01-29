@@ -51,7 +51,10 @@ function verifyTelegramAuth(data: TelegramAuthData): boolean {
 export async function POST(request: NextRequest) {
     try {
         const data: TelegramAuthData = await request.json();
-        console.log('[AUTH] Received auth request for user:', data.id);
+        const { searchParams } = new URL(request.url);
+        const source = searchParams.get('ref') || 'direct';
+
+        console.log('[AUTH] Received auth request for user:', data.id, 'source:', source);
 
         // Verify Telegram authentication
         const isValid = verifyTelegramAuth(data);
