@@ -61,9 +61,15 @@ export async function GET(request: NextRequest) {
 
         // 4. Subscription Breakdown
         const subscriptions = await sql`
-            SELECT COALESCE(subscription, 'FREE') as subscription, COUNT(*) as count 
+            SELECT 
+                CASE 
+                    WHEN UPPER(subscription) IN ('PRO', 'DOSED') THEN 'DOSED'
+                    WHEN UPPER(subscription) IN ('ELITE', 'OVERDOSED') THEN 'OVERDOSED'
+                    ELSE 'FREE'
+                END as subscription, 
+                COUNT(*) as count 
             FROM users 
-            GROUP BY subscription
+            GROUP BY 1
         `;
 
         // 5. Agent Popularity
@@ -80,8 +86,8 @@ export async function GET(request: NextRequest) {
         subscriptions.forEach((sub: any) => {
             const count = parseInt(sub.count || '0');
             const tier = (sub.subscription || '').toUpperCase();
-            if (tier === 'PRO' || tier === 'DOSED') mrr += count * 19;
-            if (tier === 'ELITE' || tier === 'OVERDOSED') mrr += count * 39;
+            if (tier === 'DOSED') mrr += count * 19;
+            if (tier === 'OVERDOSED') mrr += count * 39;
         });
 
         // 7. Referrer Breakdown
@@ -92,17 +98,32 @@ export async function GET(request: NextRequest) {
             ORDER BY count DESC
         `;
 
-        // 8. Daily Growth Trend (Last 14 days)
-        // Note: Using COALESCE on created_at is not needed but we'll count entries grouped by day
-        const growthTrend = await sql`
-            SELECT 
-                DATE_TRUNC('day', created_at) as date, 
-                COUNT(*) as count 
-            FROM users 
-            WHERE created_at IS NOT NULL AND created_at > NOW() - INTERVAL '30 days'
-            GROUP BY date 
-            ORDER BY date ASC
-        `;
+        // 8. Growth Trend (Hourly or Daily)
+        const searchParams = request.nextUrl.searchParams;
+        const timeframe = searchParams.get('timeframe') || 'daily';
+
+        let growthTrend;
+        if (timeframe === 'hourly') {
+            growthTrend = await sql`
+                SELECT 
+                    DATE_TRUNC('hour', created_at) as date, 
+                    COUNT(*) as count 
+                FROM users 
+                WHERE created_at > NOW() - INTERVAL '24 hours'
+                GROUP BY date 
+                ORDER BY date ASC
+            `;
+        } else {
+            growthTrend = await sql`
+                SELECT 
+                    DATE_TRUNC('day', created_at) as date, 
+                    COUNT(*) as count 
+                FROM users 
+                WHERE created_at > NOW() - INTERVAL '30 days'
+                GROUP BY date 
+                ORDER BY date ASC
+            `;
+        }
 
         // 9. Recent Users (Last 12)
         const recentUsers = await sql`

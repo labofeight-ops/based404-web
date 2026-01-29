@@ -12,7 +12,9 @@ import {
     User,
     Clock,
     Shield,
-    TrendingUp
+    TrendingUp,
+    Edit2,
+    X
 } from 'lucide-react';
 
 // Extra Icons
@@ -56,7 +58,10 @@ export default function AdminPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+    const [timeframe, setTimeframe] = useState<'daily' | 'hourly'>('daily');
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+    const [modalActionLoading, setModalActionLoading] = useState(false);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -72,7 +77,8 @@ export default function AdminPage() {
         setLoading(true);
         console.log('[FRONTEND] Fetching analytics...');
         try {
-            const response = await fetch('/api/admin/analytics', {
+            const apiTimeframe = timeframe === 'daily' ? 'hourly' : 'daily';
+            const response = await fetch(`/api/admin/analytics?timeframe=${apiTimeframe}`, {
                 headers: {
                     'Authorization': 'Pedro123'
                 }
@@ -96,10 +102,11 @@ export default function AdminPage() {
 
     useEffect(() => {
         if (isAuthenticated) {
+            fetchData();
             const interval = setInterval(fetchData, 30000); // refresh every 30s
             return () => clearInterval(interval);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, timeframe]);
 
     if (!isAuthenticated) {
         return (
@@ -136,6 +143,48 @@ export default function AdminPage() {
             </div>
         );
     }
+    const handleUpdateUser = async (userId: string, updates: any) => {
+        setModalActionLoading(true);
+        try {
+            const response = await fetch('/api/admin/users', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Pedro123',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userId, ...updates })
+            });
+            if (response.ok) {
+                fetchData();
+                setIsUserModalOpen(false);
+            }
+        } catch (err) {
+            console.error('Update error:', err);
+        } finally {
+            setModalActionLoading(false);
+        }
+    };
+
+    const handleDeleteUser = async (userId: string) => {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        setModalActionLoading(true);
+        try {
+            const response = await fetch(`/api/admin/users?user_id=${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Pedro123'
+                }
+            });
+            if (response.ok) {
+                fetchData();
+                setIsUserModalOpen(false);
+            }
+        } catch (err) {
+            console.error('Delete error:', err);
+        } finally {
+            setModalActionLoading(false);
+        }
+    };
 
     if (loading && !data) {
         return (
@@ -267,7 +316,10 @@ export default function AdminPage() {
                                             <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </div>
                                         <span className="text-[8px] text-neutral-600 font-bold uppercase mt-2 rotate-45 origin-left">
-                                            {new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                            {timeframe === 'daily'
+                                                ? new Date(day.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
+                                                : new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                                            }
                                         </span>
                                     </div>
                                 )
@@ -327,10 +379,8 @@ export default function AdminPage() {
                             </h3>
                         </div>
                         <div className="space-y-4">
-                            {['ELITE', 'OVERDOSED', 'PRO', 'DOSED', 'FREE'].map(tier => {
+                            {['OVERDOSED', 'DOSED', 'FREE'].map(tier => {
                                 const sub = data?.subscriptions.find(s => s.subscription === tier);
-                                if (!sub && tier !== 'FREE' && tier !== 'PRO' && tier !== 'ELITE') return null;
-
                                 const count = sub ? sub.count : '0';
                                 return (
                                     <div key={tier} className="space-y-2">
@@ -340,8 +390,8 @@ export default function AdminPage() {
                                         </div>
                                         <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-neutral-800">
                                             <div
-                                                className={`h-full rounded-full ${tier.includes('ELITE') || tier.includes('OVERDOSED') ? 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' :
-                                                    tier.includes('PRO') || tier.includes('DOSED') ? 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
+                                                className={`h-full rounded-full ${tier === 'OVERDOSED' ? 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' :
+                                                    tier === 'DOSED' ? 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
                                                         'bg-neutral-600'
                                                     }`}
                                                 style={{ width: `${(parseInt(count) / (totalUsers || 1)) * 100}%` }}
