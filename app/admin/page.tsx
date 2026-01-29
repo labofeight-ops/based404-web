@@ -43,7 +43,7 @@ interface AnalyticsData {
     agents: Array<{ chosen_agent: string; count: string }>;
     referrers: Array<{ source: string; count: string }>;
     countries: Array<{ country: string; count: string }>;
-    growthTrend: Array<{ date: string; count: string }>;
+    growthTrend: Array<{ date: string; v_count: string; s_count: string }>;
     recentUsers: Array<{
         user_id: string;
         username: string;
@@ -60,7 +60,7 @@ export default function AdminPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [timeframe, setTimeframe] = useState<'today' | 'weekly' | 'monthly'>('today');
+    const [timeframe, setTimeframe] = useState<'today' | 'yesterday' | 'weekly' | 'monthly'>('today');
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
     const [modalActionLoading, setModalActionLoading] = useState(false);
@@ -285,7 +285,7 @@ export default function AdminPage() {
                                 <p className="text-neutral-500 text-[10px] font-bold tracking-widest uppercase">Web traffic trends for {timeframe}</p>
                             </div>
                             <div className="flex gap-2">
-                                {['today', 'weekly', 'monthly'].map((t) => (
+                                {['today', 'yesterday', 'weekly', 'monthly'].map((t) => (
                                     <button
                                         key={t}
                                         onClick={() => setTimeframe(t as any)}
@@ -298,35 +298,92 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="h-64 flex items-end justify-between gap-1 relative pt-8">
-                            <div className="absolute top-0 left-0 w-full h-[1px] bg-neutral-800/50" />
-                            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-neutral-800/20" />
+                        <div className="h-64 relative pt-10 px-2 group/chart">
+                            {/* Legend */}
+                            <div className="absolute top-0 right-0 flex gap-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-[2px] bg-cyan-500 shadow-[0_0_8px_#06b6d4]" />
+                                    <span className="text-[10px] font-black uppercase text-neutral-400">Visitors</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-[2px] bg-purple-500 shadow-[0_0_8px_#a855f7]" />
+                                    <span className="text-[10px] font-black uppercase text-neutral-400">Signups</span>
+                                </div>
+                            </div>
 
-                            {data?.growthTrend && data.growthTrend.length > 0 ? data.growthTrend.map((day, idx) => {
-                                const maxCount = Math.max(...data.growthTrend.map(d => parseInt(d.count)), 1);
-                                const height = (parseInt(day.count) / maxCount) * 100;
-                                return (
-                                    <div key={idx} className="flex-1 flex flex-col items-center group relative h-full justify-end">
-                                        <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white text-black px-2 py-1 rounded text-[10px] font-black z-20">
-                                            {day.count} SIGNUPS
-                                        </div>
-                                        <div
-                                            className="w-full bg-cyan-500/20 group-hover:bg-cyan-500/50 rounded-t-lg transition-all duration-500 relative min-h-[4px]"
-                                            style={{ height: `${height}%` }}
-                                        >
-                                            <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        </div>
-                                        <span className="text-[8px] text-neutral-600 font-bold uppercase mt-2 rotate-45 origin-left">
-                                            {timeframe === 'today'
-                                                ? new Date(day.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
-                                                : new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-                                            }
-                                        </span>
+                            <div className="absolute top-10 left-0 w-full h-[calc(100%-40px)] flex flex-col justify-between pointer-events-none opacity-20">
+                                <div className="w-full h-[1px] bg-neutral-800" />
+                                <div className="w-full h-[1px] bg-neutral-800" />
+                                <div className="w-full h-[1px] bg-neutral-800" />
+                                <div className="w-full h-[1px] bg-neutral-800" />
+                            </div>
+
+                            {data?.growthTrend && data.growthTrend.length > 1 ? (
+                                <div className="w-full h-full relative">
+                                    <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                        {(() => {
+                                            const maxVal = Math.max(...data.growthTrend.flatMap(d => [parseInt(d.v_count), parseInt(d.s_count)]), 1);
+                                            const pointsV = data.growthTrend.map((d, i) => `${(i / (data.growthTrend.length - 1)) * 100},${100 - (parseInt(d.v_count) / maxVal) * 100}`).join(' ');
+                                            const pointsS = data.growthTrend.map((d, i) => `${(i / (data.growthTrend.length - 1)) * 100},${100 - (parseInt(d.s_count) / maxVal) * 100}`).join(' ');
+
+                                            // Area Gradient Path for Visitors
+                                            const areaV = `${pointsV} 100,100 0,100`;
+
+                                            return (
+                                                <>
+                                                    <defs>
+                                                        <linearGradient id="gradV" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2" />
+                                                            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
+                                                        </linearGradient>
+                                                    </defs>
+
+                                                    {/* Visitor Area */}
+                                                    <polygon points={areaV} fill="url(#gradV)" className="transition-all duration-1000" />
+
+                                                    {/* Visitor Line */}
+                                                    <polyline
+                                                        fill="none"
+                                                        stroke="#06b6d4"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        points={pointsV}
+                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                                    />
+
+                                                    {/* Signup Line */}
+                                                    <polyline
+                                                        fill="none"
+                                                        stroke="#a855f7"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        points={pointsS}
+                                                        className="transition-all duration-1000 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+                                                    />
+                                                </>
+                                            );
+                                        })()}
+                                    </svg>
+
+                                    {/* X-Axis Labels */}
+                                    <div className="absolute -bottom-6 left-0 w-full flex justify-between px-1">
+                                        {data.growthTrend.map((day, idx) => (
+                                            (idx % Math.ceil(data.growthTrend.length / 8) === 0 || idx === data.growthTrend.length - 1) && (
+                                                <span key={idx} className="text-[8px] text-neutral-600 font-bold uppercase whitespace-nowrap">
+                                                    {timeframe === 'today' || timeframe === 'yesterday'
+                                                        ? new Date(day.date).getHours() + ':00'
+                                                        : new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                                                    }
+                                                </span>
+                                            )
+                                        ))}
                                     </div>
-                                )
-                            }) : (
+                                </div>
+                            ) : (
                                 <div className="w-full h-full flex items-center justify-center text-neutral-700 font-black uppercase italic tracking-widest text-sm">
-                                    No Growth Data Synchronized
+                                    Analyzing Live Streams...
                                 </div>
                             )}
                         </div>

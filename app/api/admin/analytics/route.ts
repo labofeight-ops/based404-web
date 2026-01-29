@@ -105,34 +105,67 @@ export async function GET(request: NextRequest) {
             ORDER BY count DESC
         `;
 
-        // 8. Growth Trend (Hourly or Daily) - UPDATED TO USE VISITOR_LOGS
+        // 8. Growth Trend (Linear Dual Metrics) - v2.6
         const searchParams = request.nextUrl.searchParams;
-        const timeframe = searchParams.get('timeframe') || 'daily';
+        const timeframe = searchParams.get('timeframe') || 'today';
 
-        let growthTrend;
-        let interval = '30 days';
+        let intervalStr = '24 hours';
+        let dateTrunc = 'hour';
+        let queryInterval = '1 hour';
+        let startBound = sql`DATE_TRUNC('day', NOW())`;
+        let endBound = sql`NOW()`;
 
-        if (timeframe === 'today') interval = '24 hours';
-        if (timeframe === 'weekly') interval = '7 days';
-        if (timeframe === 'monthly') interval = '30 days';
+        if (timeframe === 'yesterday') {
+            startBound = sql`DATE_TRUNC('day', NOW() - INTERVAL '1 day')`;
+            endBound = sql`DATE_TRUNC('day', NOW()) - INTERVAL '1 second'`;
+            intervalStr = '24 hours';
+        } else if (timeframe === 'weekly') {
+            startBound = sql`DATE_TRUNC('day', NOW() - INTERVAL '6 days')`;
+            dateTrunc = 'day';
+            queryInterval = '1 day';
+            intervalStr = '7 days';
+        } else if (timeframe === 'monthly') {
+            startBound = sql`DATE_TRUNC('day', NOW() - INTERVAL '29 days')`;
+            dateTrunc = 'day';
+            queryInterval = '1 day';
+            intervalStr = '30 days';
+        }
 
-        const dateTrunc = (timeframe === 'today') ? 'hour' : 'day';
-
-        growthTrend = await sql`
+        const growthTrend = await sql`
+            WITH series AS (
+                SELECT generate_series(
+                    ${startBound}, 
+                    ${endBound}, 
+                    ${queryInterval}::interval
+                ) as date
+            ),
+            visitors AS (
+                SELECT DATE_TRUNC(${dateTrunc}, created_at) as date, COUNT(*) as count 
+                FROM visitor_logs 
+                WHERE created_at >= ${startBound} AND created_at <= ${endBound}
+                GROUP BY 1
+            ),
+            signups AS (
+                SELECT DATE_TRUNC(${dateTrunc}, created_at) as date, COUNT(*) as count 
+                FROM users 
+                WHERE created_at >= ${startBound} AND created_at <= ${endBound}
+                GROUP BY 1
+            )
             SELECT 
-                DATE_TRUNC(${dateTrunc}, created_at) as date, 
-                COUNT(*) as count 
-            FROM visitor_logs 
-            WHERE created_at > NOW() - ${interval}::interval
-            GROUP BY date 
-            ORDER BY date ASC
+                series.date, 
+                COALESCE(visitors.count, 0) as v_count,
+                COALESCE(signups.count, 0) as s_count
+            FROM series
+            LEFT JOIN visitors ON series.date = visitors.date
+            LEFT JOIN signups ON series.date = signups.date
+            ORDER BY series.date ASC
         `;
 
         // 8.1 Total Visitors for the selected period
         const totalVisitorsResult = await sql`
             SELECT COUNT(*) as count 
             FROM visitor_logs 
-            WHERE created_at > NOW() - ${interval}::interval
+            WHERE created_at >= ${startBound} AND created_at <= ${endBound}
         `;
         const totalVisitorsPeriod = parseInt(totalVisitorsResult[0]?.count || '0');
 
@@ -140,7 +173,7 @@ export async function GET(request: NextRequest) {
         const countries = await sql`
             SELECT COALESCE(country, 'Unknown') as country, COUNT(*) as count 
             FROM visitor_logs 
-            WHERE created_at > NOW() - ${interval}::interval
+            WHERE created_at >= ${startBound} AND created_at <= ${endBound}
             GROUP BY country
             ORDER BY count DESC
             LIMIT 10
