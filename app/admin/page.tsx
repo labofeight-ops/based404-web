@@ -32,6 +32,7 @@ interface AnalyticsData {
         liveVisitors: number;
         liveChatting: number;
         mrr: number;
+        totalVisitorsPeriod: number;
         xUsage: {
             remaining: string | number;
             limit: string | number;
@@ -41,6 +42,7 @@ interface AnalyticsData {
     subscriptions: Array<{ subscription: string; count: string }>;
     agents: Array<{ chosen_agent: string; count: string }>;
     referrers: Array<{ source: string; count: string }>;
+    countries: Array<{ country: string; count: string }>;
     growthTrend: Array<{ date: string; count: string }>;
     recentUsers: Array<{
         user_id: string;
@@ -58,7 +60,7 @@ export default function AdminPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [timeframe, setTimeframe] = useState<'daily' | 'hourly'>('daily');
+    const [timeframe, setTimeframe] = useState<'today' | 'weekly' | 'monthly'>('today');
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
     const [modalActionLoading, setModalActionLoading] = useState(false);
@@ -77,8 +79,7 @@ export default function AdminPage() {
         setLoading(true);
         console.log('[FRONTEND] Fetching analytics...');
         try {
-            const apiTimeframe = timeframe === 'daily' ? 'hourly' : 'daily';
-            const response = await fetch(`/api/admin/analytics?timeframe=${apiTimeframe}`, {
+            const response = await fetch(`/api/admin/analytics?timeframe=${timeframe}`, {
                 headers: {
                     'Authorization': 'Pedro123'
                 }
@@ -238,11 +239,11 @@ export default function AdminPage() {
                 {/* STATS GRID */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <StatsCard
-                        title="TOTAL ASSETS"
-                        value={totalUsers}
+                        title="TOTAL VISITORS"
+                        value={data?.stats.totalVisitorsPeriod || 0}
                         icon={<Users className="w-5 h-5" />}
                         color="cyan"
-                        sub={`ARPU: $${arpu}`}
+                        sub={`Period: ${timeframe.toUpperCase()}`}
                     />
                     <StatsCard
                         title="LIVE ACTIVITY"
@@ -280,11 +281,11 @@ export default function AdminPage() {
                     <div className="glass p-8 rounded-[40px] border border-neutral-800/50 lg:col-span-2">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h3 className="text-xl font-black uppercase italic tracking-tighter">Asset Growth</h3>
-                                <p className="text-neutral-500 text-[10px] font-bold tracking-widest uppercase">New user registrations over time</p>
+                                <h3 className="text-xl font-black uppercase italic tracking-tighter">Visitor Growth</h3>
+                                <p className="text-neutral-500 text-[10px] font-bold tracking-widest uppercase">Web traffic trends for {timeframe}</p>
                             </div>
                             <div className="flex gap-2">
-                                {['daily', 'weekly', 'monthly'].map((t) => (
+                                {['today', 'weekly', 'monthly'].map((t) => (
                                     <button
                                         key={t}
                                         onClick={() => setTimeframe(t as any)}
@@ -316,7 +317,7 @@ export default function AdminPage() {
                                             <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </div>
                                         <span className="text-[8px] text-neutral-600 font-bold uppercase mt-2 rotate-45 origin-left">
-                                            {timeframe === 'daily'
+                                            {timeframe === 'today'
                                                 ? new Date(day.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
                                                 : new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
                                             }

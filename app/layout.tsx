@@ -48,6 +48,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${dotGothic.variable} font-sans antialiased`}>
         {children}
+        <img
+          src="/api/track?source=web"
+          alt=""
+          style={{ display: 'none' }}
+          aria-hidden="true"
+        />
         <Analytics />
       </body>
     </html>

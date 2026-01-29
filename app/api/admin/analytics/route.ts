@@ -29,6 +29,13 @@ export async function GET(request: NextRequest) {
                 IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='last_active') THEN 
                     ALTER TABLE users ADD COLUMN last_active TIMESTAMP DEFAULT NOW();
                 END IF;
+                CREATE TABLE IF NOT EXISTS visitor_logs (
+                    id SERIAL PRIMARY KEY,
+                    ip_address TEXT,
+                    country TEXT,
+                    source TEXT,
+                    created_at TIMESTAMP DEFAULT NOW()
+                );
             END $$;
         `.catch(e => console.error('[ADMIN_API] Migration error (non-fatal):', e));
         // --------------------------------
@@ -98,32 +105,46 @@ export async function GET(request: NextRequest) {
             ORDER BY count DESC
         `;
 
-        // 8. Growth Trend (Hourly or Daily)
+        // 8. Growth Trend (Hourly or Daily) - UPDATED TO USE VISITOR_LOGS
         const searchParams = request.nextUrl.searchParams;
         const timeframe = searchParams.get('timeframe') || 'daily';
 
         let growthTrend;
-        if (timeframe === 'hourly') {
-            growthTrend = await sql`
-                SELECT 
-                    DATE_TRUNC('hour', created_at) as date, 
-                    COUNT(*) as count 
-                FROM users 
-                WHERE created_at > NOW() - INTERVAL '24 hours'
-                GROUP BY date 
-                ORDER BY date ASC
-            `;
-        } else {
-            growthTrend = await sql`
-                SELECT 
-                    DATE_TRUNC('day', created_at) as date, 
-                    COUNT(*) as count 
-                FROM users 
-                WHERE created_at > NOW() - INTERVAL '30 days'
-                GROUP BY date 
-                ORDER BY date ASC
-            `;
-        }
+        let interval = '30 days';
+
+        if (timeframe === 'today') interval = '24 hours';
+        if (timeframe === 'weekly') interval = '7 days';
+        if (timeframe === 'monthly') interval = '30 days';
+
+        const dateTrunc = (timeframe === 'today') ? 'hour' : 'day';
+
+        growthTrend = await sql`
+            SELECT 
+                DATE_TRUNC(${dateTrunc}, created_at) as date, 
+                COUNT(*) as count 
+            FROM visitor_logs 
+            WHERE created_at > NOW() - ${interval}::interval
+            GROUP BY date 
+            ORDER BY date ASC
+        `;
+
+        // 8.1 Total Visitors for the selected period
+        const totalVisitorsResult = await sql`
+            SELECT COUNT(*) as count 
+            FROM visitor_logs 
+            WHERE created_at > NOW() - ${interval}::interval
+        `;
+        const totalVisitorsPeriod = parseInt(totalVisitorsResult[0]?.count || '0');
+
+        // 8.2 Top Countries
+        const countries = await sql`
+            SELECT COALESCE(country, 'Unknown') as country, COUNT(*) as count 
+            FROM visitor_logs 
+            WHERE created_at > NOW() - ${interval}::interval
+            GROUP BY country
+            ORDER BY count DESC
+            LIMIT 10
+        `;
 
         // 9. Recent Users (Last 12)
         const recentUsers = await sql`
@@ -169,12 +190,14 @@ export async function GET(request: NextRequest) {
                 active24h,
                 liveVisitors,
                 liveChatting,
+                totalVisitorsPeriod,
                 mrr,
                 xUsage
             },
             subscriptions,
             agents,
             referrers,
+            countries,
             growthTrend,
             recentUsers
         });
